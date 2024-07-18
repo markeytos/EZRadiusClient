@@ -146,6 +146,10 @@ public class EZRadiusManager : IEZRadiusManager
         if (getAuthAuditLogsResponse.Success && getAuthAuditLogsResponse.Message != null)
         {
             List<AuthenticationEventModel>? authenticationLogs = JsonSerializer.Deserialize<List<AuthenticationEventModel>>(getAuthAuditLogsResponse.Message);
+            if (authenticationLogs == null)
+            {
+                throw new HttpRequestException("Error deserializing auth logs");
+            }
             return authenticationLogs;
         }
         else

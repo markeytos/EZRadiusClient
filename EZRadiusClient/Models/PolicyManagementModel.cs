@@ -4,8 +4,6 @@ namespace EZRadiusClient.Models
 {
     public class PolicyManagementModel
     {
-        public PolicyManagementModel() { }
-        
         [JsonPropertyName("RadiusServers")]
         public List<RadiusServerDetails> RadiusServers { get; set; } = new();
 

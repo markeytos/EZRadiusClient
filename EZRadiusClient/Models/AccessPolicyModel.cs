@@ -4,8 +4,6 @@ namespace EZRadiusClient.Models;
 
 public class AccessPolicyModel
 {
-    public AccessPolicyModel() { }
-    
     [JsonPropertyName("PolicyName")]
     public string PolicyName { get; set; } = string.Empty;
 

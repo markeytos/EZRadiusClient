@@ -13,10 +13,10 @@ namespace SampleApp.Managers;
 
 public class RadiusAppManager
 {
-    public int ProcessErrors(IEnumerable<Error> errs)
+    public Task<int> ProcessErrors(IEnumerable<Error> errs)
     {
         Console.WriteLine(errs);
-        return 1;
+        return Task.FromResult(1);
     }
     
     public async Task<int> CallShowPoliciesAsync(ShowPoliciesArgModel passedArguments)
@@ -72,6 +72,10 @@ public class RadiusAppManager
 
         try
         {
+            if (string.IsNullOrWhiteSpace(parameters.csvFilePath))
+            {
+                throw new Exception("Please provide a path to save the IP addresses");
+            }
             List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(ezRadiusClient);
             int chosenPolicyIndex =
                 InputService.ChooseRadiusPolicy(currentRadiusPolicies, "download IP addresses from");
@@ -97,6 +101,10 @@ public class RadiusAppManager
 
         try
         {
+            if (string.IsNullOrWhiteSpace(parameters.csvFilePath))
+            {
+                throw new Exception("Please provide a path to save the IP addresses");
+            }
             List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(ezRadiusClient);
             int chosenPolicyIndex = InputService.ChooseRadiusPolicy(currentRadiusPolicies, "upload IP addresses to");
             Console.WriteLine("Updating IP Addresses for " + currentRadiusPolicies[chosenPolicyIndex].PolicyName +

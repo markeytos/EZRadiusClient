@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 
 public class AllowedIPAddressModel
 {
-    public AllowedIPAddressModel() { }
-
     public AllowedIPAddressModel(string clientIpAddress, string sharedSecret)
     {
         ClientIPAddress = clientIpAddress;
@@ -15,9 +13,9 @@ public class AllowedIPAddressModel
 
     [JsonPropertyName("ClientIPAddress")]
     [Name("ClientIPAddress")]
-    public string ClientIPAddress { get; set; } = string.Empty;
+    public string ClientIPAddress { get; set; }
 
     [JsonPropertyName("SharedSecret")]
     [Name("SharedSecret")]
-    public string SharedSecret { get; set; } = string.Empty;
+    public string SharedSecret { get; set; }
 }

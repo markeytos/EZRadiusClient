@@ -4,8 +4,6 @@ namespace EZRadiusClient.Models;
 
 public class ServerCAModel
 {
-    public ServerCAModel() { }
-    
     [JsonPropertyName("SubjectName")]
     public string SubjectName { get; set; } = string.Empty;
 

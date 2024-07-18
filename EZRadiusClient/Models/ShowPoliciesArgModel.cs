@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 [Verb("show", HelpText = "Display all policies in the EZRadius instance")]
 public class ShowPoliciesArgModel
 {
-    public ShowPoliciesArgModel() { }
-    
     [Option('s', "scope", Required = false, HelpText = "Token Scope to be used")]
     public string Scope { get; set; } = string.Empty;
     

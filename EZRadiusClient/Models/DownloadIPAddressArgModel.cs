@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 [Verb("download", HelpText = "Download IP addresses from Radius policy as a CSV file")]
 public class DownloadIPAddressArgModel
 {
-    public DownloadIPAddressArgModel() { }
-
     [Option('s', "scope", Required = false, HelpText = "Token Scope to be used")] 
     public string Scope { get; set; } = string.Empty;
     

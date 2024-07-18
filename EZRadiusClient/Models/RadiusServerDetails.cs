@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 
 public class RadiusServerDetails
 {
-    public RadiusServerDetails() { }
-    
     [JsonPropertyName("IPAddress")]
     public string IPAddress { get; set; } = string.Empty;
 

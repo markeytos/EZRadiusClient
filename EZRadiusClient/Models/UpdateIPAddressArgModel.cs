@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 [Verb("upload", HelpText = "Upload IP addresses to Radius policy from a CSV file")]
 public class UpdateIPAddressArgModel
 {
-    public UpdateIPAddressArgModel() { }
-
     [Option('s', "scope", Required = false, HelpText = "Token Scope to be used")] 
     public string Scope { get; set; } = string.Empty;
     

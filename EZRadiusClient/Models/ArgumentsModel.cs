@@ -1,5 +1,3 @@
-using CommandLine;
-
 namespace EZRadiusClient.Models;
 
 public class ArgumentsModel
@@ -46,13 +44,13 @@ public class ArgumentsModel
         AppInsightConnection = arguments.AppInsightConnection;
     }
     
-    public string Scope { get; set; } = string.Empty;
+    public string Scope { get; set; }
     
-    public string InstanceUrl { get; set; } = string.Empty;
+    public string InstanceUrl { get; set; }
     
-    public string ADUrl { get; set; } = string.Empty;
+    public string ADUrl { get; set; }
     
-    public string AppInsightConnection { get; set; } = string.Empty;
+    public string AppInsightConnection { get; set; }
 
     public string? csvFilePath { get; set; } = string.Empty;
 }

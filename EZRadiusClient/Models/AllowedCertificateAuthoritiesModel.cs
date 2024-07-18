@@ -2,9 +2,8 @@ using System.Text.Json.Serialization;
 
 namespace EZRadiusClient.Models;
 
-public class AllowedCertificateAuthoritiesModel {
-    public AllowedCertificateAuthoritiesModel() { }
-    
+public class AllowedCertificateAuthoritiesModel 
+{
     [JsonPropertyName("SubjectName")]
     public string SubjectName { get; set; } = string.Empty;
     

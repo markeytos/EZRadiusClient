@@ -1,7 +1,4 @@
-using Azure.Identity;
-using EZRadiusClient.Managers;
 using EZRadiusClient.Models;
-using Microsoft.Extensions.Logging;
 
 namespace SampleApp.Services;
 

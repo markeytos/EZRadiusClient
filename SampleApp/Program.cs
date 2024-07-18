@@ -10,7 +10,7 @@ public class Program
     {
         RadiusAppManager radiusAppManager = new();
         Console.WriteLine("Welcome to the EZRadius Sample");
-        int result = Parser
+        int result = await Parser
             .Default.ParseArguments<
                 ShowPoliciesArgModel, 
                 DownloadIPAddressArgModel, 
@@ -19,16 +19,16 @@ public class Program
                 GetAuditLogsArgModel
             >(args)
             .MapResult(
-                (ShowPoliciesArgModel operation) => 
-                    radiusAppManager.CallShowPoliciesAsync(operation).GetAwaiter().GetResult(), 
+                async (ShowPoliciesArgModel operation) => 
+                    await radiusAppManager.CallShowPoliciesAsync(operation), 
                 (DownloadIPAddressArgModel operation) => 
-                    radiusAppManager.CallDownloadIPAddressesAsync(operation).GetAwaiter().GetResult(), 
-                (UpdateIPAddressArgModel operation) => 
-                    radiusAppManager.CallUpdateIPAddressesAsync(operation).GetAwaiter().GetResult(),  
-                (DeletePolicyArgModel operation) => 
-                    radiusAppManager.CallDeleteRadiusPolicyAsync(operation).GetAwaiter().GetResult(), 
-                (GetAuditLogsArgModel operation) => 
-                    radiusAppManager.CallGetAuditLogsAsync(operation).GetAwaiter().GetResult(), 
+                    radiusAppManager.CallDownloadIPAddressesAsync(operation), 
+                async (UpdateIPAddressArgModel operation) => 
+                    await radiusAppManager.CallUpdateIPAddressesAsync(operation),  
+                async (DeletePolicyArgModel operation) => 
+                    await radiusAppManager.CallDeleteRadiusPolicyAsync(operation), 
+                async (GetAuditLogsArgModel operation) => 
+                    await radiusAppManager.CallGetAuditLogsAsync(operation), 
                 errs => radiusAppManager.ProcessErrors(errs));
         Environment.Exit(result);
     }

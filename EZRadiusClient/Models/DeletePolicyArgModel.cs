@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 [Verb("delete", HelpText = "Delete existing Radius policy in EZRadius instance")]
 public class DeletePolicyArgModel
 {
-    public DeletePolicyArgModel() { }
-
     [Option('s', "scope", Required = false, HelpText = "Token Scope to be used")] 
     public string Scope { get; set; } = string.Empty;
     

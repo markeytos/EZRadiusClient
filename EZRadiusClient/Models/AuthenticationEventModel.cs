@@ -4,13 +4,11 @@ namespace EZRadiusClient.Models;
 
 public class AuthenticationEventModel
 {
-    public AuthenticationEventModel() { }
-    
     [JsonPropertyName("SubscriptionId")]
-    public string SubscriptionId { get; set; }
+    public string? SubscriptionId { get; set; }
 
     [JsonPropertyName("RadiusSubscriptionTenantId")]
-    public string RadiusSubscriptionTenantId { get; set; }
+    public string? RadiusSubscriptionTenantId { get; set; }
 
     [JsonPropertyName("PolicyID")]
     public string? PolicyID { get; set; }

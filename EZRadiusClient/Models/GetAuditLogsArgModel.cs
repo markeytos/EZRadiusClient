@@ -5,8 +5,6 @@ namespace EZRadiusClient.Models;
 [Verb("getlogs", HelpText = "Get Authorization Audit logs from EZRadius Instance")]
 public class GetAuditLogsArgModel
 {
-    public GetAuditLogsArgModel() { }
-    
     [Option('s', "scope", Required = false, HelpText = "Token Scope to be used")] 
     public string Scope { get; set; } = string.Empty;
     
