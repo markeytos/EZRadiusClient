@@ -17,20 +17,12 @@ public interface IEZRadiusManager
     Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync();
     
     /// <summary>
-    /// Creates a new Radius policy in the EZRadius Database with passed policy
+    /// Creates a new Radius policy or overwrites existing Radius policy in the EZRadius Database with passed policy
     /// </summary>
-    /// <param name="policy"></param> <see cref="RadiusPolicyModel"/> Model containing attributes for policy to be created
+    /// <param name="policy"></param> <see cref="RadiusPolicyModel"/> Model containing attributes for policy to be created or edited
     /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
     /// <exception cref="HttpRequestException">Error contacting server</exception>
-    Task<APIResultModel> CreateRadiusPolicyAsync(RadiusPolicyModel policy);
-    
-    /// <summary>
-    /// Edits an existing Radius policy in the EZRadius Database with passed policy
-    /// </summary>
-    /// <param name="policy"></param> Model containing attributes for policy to be edited
-    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
-    /// <exception cref="HttpRequestException">Error contacting server</exception>
-    Task<APIResultModel> EditRadiusPolicyAsync(RadiusPolicyModel policy);
+    Task<APIResultModel> CreateOrEditRadiusPolicyAsync(RadiusPolicyModel policy);
 
     /// <summary>
     /// Deletes an existing Radius policy in the EZRadius Database with passed policy
@@ -105,7 +97,7 @@ public class EZRadiusManager : IEZRadiusManager
         }
     }
     
-    public async Task<APIResultModel> CreateRadiusPolicyAsync(RadiusPolicyModel policy)
+    public async Task<APIResultModel> CreateOrEditRadiusPolicyAsync(RadiusPolicyModel policy)
     {
         await GetTokenAsync();
         if (policy == null)
@@ -120,26 +112,7 @@ public class EZRadiusManager : IEZRadiusManager
         }
         else
         {
-            throw new HttpRequestException("Error creating radius policy" + createRadiusPolicyResponse.Message);
-        }
-    }
-    
-    public async Task<APIResultModel> EditRadiusPolicyAsync(RadiusPolicyModel policy)
-    {
-        await GetTokenAsync();
-        if (policy == null)
-        {
-            throw new ArgumentNullException(nameof(policy));
-        }
-        string jsonPayload = JsonSerializer.Serialize(policy);
-        APIResultModel editRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
-        if (editRadiusPolicyResponse.Success)
-        {
-            return editRadiusPolicyResponse;
-        }
-        else
-        {
-            throw new HttpRequestException("Error editing radius policy" + editRadiusPolicyResponse.Message);
+            throw new HttpRequestException("Error creating or editing radius policy" + createRadiusPolicyResponse.Message);
         }
     }
     

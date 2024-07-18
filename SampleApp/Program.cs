@@ -8,11 +8,7 @@ using EZRadiusClient.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-string appInsightsConnectionString = "";
-string adInstanceUrl = "";
-string instanceUrl = "";
-string scopes = "";
-string csvFilePath = "";
+ArgumentsModel passedArguments = new();
 
 Console.WriteLine("Welcome to the EZRadius Sample");
 int result = Parser.Default.ParseArguments<ArgumentsModel>(args).MapResult((opts) => InitializeVariables(opts), errs => ProcessErrors(errs));
@@ -22,22 +18,22 @@ if (result != 0)
     return;
 }
 
-if (string.IsNullOrWhiteSpace(adInstanceUrl))
+if (string.IsNullOrWhiteSpace(passedArguments.ADUrl))
 {
-    adInstanceUrl = "https://login.microsoftonline.com/";
+    passedArguments.ADUrl = "https://login.microsoftonline.com/";
 }
-if (string.IsNullOrWhiteSpace(instanceUrl))
+if (string.IsNullOrWhiteSpace(passedArguments.InstanceUrl))
 {
-    instanceUrl = "https://usa.ezradius.io/";
+    passedArguments.InstanceUrl = "https://usa.ezradius.io/";
 }
-if (string.IsNullOrWhiteSpace(scopes))
+if (string.IsNullOrWhiteSpace(passedArguments.Scope))
 {
-    scopes = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default";
+    passedArguments.Scope = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default";
 }
 
-ILogger logger = CreateLogger(appInsightsConnectionString);
-var cliAuthentication = new AzureCliCredentialOptions { AuthorityHost = new Uri(adInstanceUrl) };
-IEZRadiusManager ezRadiusClient = new EZRadiusManager(new HttpClient(), logger, new AzureCliCredential(cliAuthentication), instanceUrl, scopes);
+ILogger logger = CreateLogger(passedArguments.AppInsight);
+var cliAuthentication = new AzureCliCredentialOptions { AuthorityHost = new Uri(passedArguments.ADUrl) };
+IEZRadiusManager ezRadiusClient = new EZRadiusManager(new HttpClient(), logger, new AzureCliCredential(cliAuthentication), passedArguments.InstanceUrl, passedArguments.Scope);
 
 try
 {
@@ -46,11 +42,11 @@ try
     Console.WriteLine($"Found {currentRadiusPolicies.Count} policies");
     
     Console.WriteLine("Grabbing IP Addresses from current policy and saving to CSV file");
-    APIResultModel getIPAddressesResult = GetAllowedIPAddressesInCSVAsync(csvFilePath, currentRadiusPolicies[0]);
+    APIResultModel getIPAddressesResult = GetAllowedIPAddressesInCSVAsync(passedArguments.csvFilePath, currentRadiusPolicies[0]);
     Console.WriteLine(getIPAddressesResult.Message);
     
     Console.WriteLine("Updating Policy IP Addresses from CSV file");
-    APIResultModel updateIPAddressesResult = await UpdateIPAddressesWithCSVAsync(csvFilePath, currentRadiusPolicies[0]);
+    APIResultModel updateIPAddressesResult = await UpdateIPAddressesWithCSVAsync(passedArguments.csvFilePath, currentRadiusPolicies[0]);
     Console.WriteLine(updateIPAddressesResult.Message);
 }
 catch (Exception e)
@@ -72,7 +68,7 @@ async Task<APIResultModel> UpdateIPAddressesWithCSVAsync(string pathToCSVFile, R
             allowedIPAddresses.Add(new AllowedIPAddressModel(record.ClientIPAddress, record.SharedSecret));
         }
         currentPolicy.AllowedIPAddresses = allowedIPAddresses;
-        return await ezRadiusClient.EditRadiusPolicyAsync(currentPolicy);
+        return await ezRadiusClient.CreateOrEditRadiusPolicyAsync(currentPolicy);
     }
     catch (Exception e)
     {
@@ -100,11 +96,7 @@ APIResultModel GetAllowedIPAddressesInCSVAsync(string pathToCSVFile, RadiusPolic
 
 int InitializeVariables(ArgumentsModel opts)
 {
-    appInsightsConnectionString = opts.AppInsight;
-    adInstanceUrl = opts.ADUrl;
-    instanceUrl = opts.InstanceUrl;
-    scopes = opts.Scope;
-    csvFilePath = opts.csvFilePath;
+    passedArguments = opts;
     return 0;
 }
 

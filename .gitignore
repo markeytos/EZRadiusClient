@@ -1,0 +1,11 @@
+/**/.idea/
+/**/bin/
+/**/obj/
+/bin
+/obj
+/.idea
+
+*.sln
+.DS_Store
+*.xml
+/.config

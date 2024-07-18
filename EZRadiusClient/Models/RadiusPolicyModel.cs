@@ -26,5 +26,5 @@ public class RadiusPolicyModel
         public ServerCAModel ServerCertificate { get; set; } = new();
 
         [JsonPropertyName("AccessPolicies")] 
-        public List<DBAccessPolicyModel> AccessPolicies { get; set; } = new();
+        public List<AccessPolicyModel> AccessPolicies { get; set; } = new();
 }
