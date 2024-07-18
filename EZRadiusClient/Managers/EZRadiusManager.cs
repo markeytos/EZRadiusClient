@@ -88,7 +88,6 @@ public class EZRadiusManager : IEZRadiusManager
             {
                 throw new HttpRequestException("Error deserializing current radius policies");
             }
-
             return currentPolicyManagementModel.RadiusPolicies;
         }
         else
@@ -142,7 +141,6 @@ public class EZRadiusManager : IEZRadiusManager
         {
             throw new ArgumentNullException(nameof(timeFrame));
         }
-
         string payload = JsonSerializer.Serialize(timeFrame);
         APIResultModel getAuthAuditLogsResponse = await _httpClient.CallGenericAsync(_url + "/api/Logs/GetAuthAuditLogs", payload, _token.Token, HttpMethod.Post);
         if (getAuthAuditLogsResponse.Success && getAuthAuditLogsResponse.Message != null)
