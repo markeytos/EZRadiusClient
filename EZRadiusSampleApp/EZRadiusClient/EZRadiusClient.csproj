@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Title>EZRadiusClient</Title>
+        <Version>1.0.2</Version>
+        <Authors>Keytos Security</Authors>
+        <Copyright>Keytos Security</Copyright>
+        <Description>EZRadius client is a package that allows you to automate some management API calls for EZRadius</Description>
+        <PackageProjectUrl>https://www.keytos.io/cloud-radius-as-a-service-for-azure-and-entra-id</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/markeytos/EZRadiusClient</RepositoryUrl>
+        <PackageTags>radius</PackageTags>
+        <PackageReleaseNotes>First Release</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Azure.Identity" Version="1.12.0" />
+      <PackageReference Include="CommandLineParser" Version="2.9.1" />
+      <PackageReference Include="CsvHelper" Version="33.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+      <PackageReference Include="Polly" Version="8.4.1" />
+    </ItemGroup>
+
+</Project>

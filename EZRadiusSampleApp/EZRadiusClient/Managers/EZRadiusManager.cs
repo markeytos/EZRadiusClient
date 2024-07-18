@@ -1,7 +1,4 @@
-using System.Net;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 using Azure.Core;
 using Azure.Identity;
 using EZRadiusClient.Services;
@@ -15,33 +12,40 @@ public interface IEZRadiusManager
     /// <summary>
     /// Gets the current Radius policies from the EZRadius Database
     /// </summary>
-    /// <returns>List of <see cref="RadiusPolicyModel"/></returns>
+    /// <returns>List of <see cref="RadiusPolicyModel"/></returns> Radius Policies
     /// <exception cref="HttpRequestException">Error contacting server</exception>
-    Task<List<RadiusPolicyModel>> GetRadiusPolicies();
+    Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync();
     
     /// <summary>
     /// Creates a new Radius policy in the EZRadius Database with passed policy
     /// </summary>
-    /// <param name="policy"></param> Model containing attributes for policy to be created
-    /// <returns>List of <see cref="APIResultModel"/></returns>
+    /// <param name="policy"></param> <see cref="RadiusPolicyModel"/> Model containing attributes for policy to be created
+    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
     /// <exception cref="HttpRequestException">Error contacting server</exception>
-    Task<APIResultModel> CreateRadiusPolicy(RadiusPolicyModel policy);
+    Task<APIResultModel> CreateRadiusPolicyAsync(RadiusPolicyModel policy);
     
     /// <summary>
     /// Edits an existing Radius policy in the EZRadius Database with passed policy
     /// </summary>
     /// <param name="policy"></param> Model containing attributes for policy to be edited
-    /// <returns></returns>
+    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
     /// <exception cref="HttpRequestException">Error contacting server</exception>
-    Task<APIResultModel> EditRadiusPolicy(RadiusPolicyModel policy);
+    Task<APIResultModel> EditRadiusPolicyAsync(RadiusPolicyModel policy);
 
     /// <summary>
     /// Deletes an existing Radius policy in the EZRadius Database with passed policy
     /// </summary>
     /// <param name="policy"></param> Model containing attributes for policy to be deleted
-    /// <returns></returns>
+    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
     /// <exception cref="HttpRequestException">Error contacting server</exception>
-    Task<APIResultModel> DeleteRadiusPolicy(RadiusPolicyModel policy);
+    Task<APIResultModel> DeleteRadiusPolicyAsync(RadiusPolicyModel policy);
+
+    /// <summary>
+    /// Gets the Authorization Audit logs for the passed time frame
+    /// </summary>
+    /// <param name="timeFrame"></param> Model for the time frame to get logs for
+    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
+    Task<APIResultModel> GetAuthAuditLogsAsync(TimeFrameModel timeFrame);
 }
 
 public class EZRadiusManager : IEZRadiusManager
@@ -50,18 +54,24 @@ public class EZRadiusManager : IEZRadiusManager
     private readonly string _url;
     private AccessToken _token;
     private readonly TokenCredential? _azureTokenCredential;
+    private readonly string _scopes;
 
-    public EZRadiusManager(HttpClient httpClient, ILogger? logger, TokenCredential? azureTokenCredential, string baseUrl = "https://test.ezradius.io/")
+    public EZRadiusManager(
+        HttpClient httpClient, 
+        ILogger? logger = null, 
+        TokenCredential? azureTokenCredential = null, 
+        string baseUrl = "https://usa.ezradius.io/", 
+        string scopes = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default"
+        )
     {
-        if (string.IsNullOrWhiteSpace(baseUrl))
-        {
-            throw new ArgumentNullException(nameof(baseUrl));
-        }
         if (httpClient == null)
         {
             throw new ArgumentNullException(nameof(httpClient));
         }
-
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            throw new ArgumentNullException(nameof(baseUrl));
+        }
         if (azureTokenCredential == null)
         {
             _azureTokenCredential = new DefaultAzureCredential();
@@ -72,21 +82,22 @@ public class EZRadiusManager : IEZRadiusManager
         }
         _httpClient = new HttpClientService(httpClient, logger);
         _url = baseUrl.TrimEnd('/').Replace("http://", "https://");
+        _scopes = scopes;
     }
-
-    public async Task<List<RadiusPolicyModel>> GetRadiusPolicies()
+    
+    public async Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync()
     {
         await GetTokenAsync();
-        APIResultModel getRadiusPoliciesResponse = await _httpClient.CallGenericAsync(_url + "api/Policies/GetRadiusPolicies", null, _token.Token, HttpMethod.Get);
-        if (getRadiusPoliciesResponse.Success)
+        APIResultModel getRadiusPoliciesResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/GetRadiusPolicies", null, _token.Token, HttpMethod.Get);
+        if (getRadiusPoliciesResponse.Success && getRadiusPoliciesResponse.Message != null)
         {
-            List<RadiusPolicyModel>? currentRadiusPolicies = JsonSerializer.Deserialize<List<RadiusPolicyModel>>(getRadiusPoliciesResponse.Message);
-            if (currentRadiusPolicies == null)
+            PolicyManagementModel? currentPolicyManagementModel = JsonSerializer.Deserialize<PolicyManagementModel>(getRadiusPoliciesResponse.Message);
+            if (currentPolicyManagementModel == null)
             {
                 throw new HttpRequestException("Error deserializing current radius policies");
             }
 
-            return currentRadiusPolicies;
+            return currentPolicyManagementModel.RadiusPolicies;
         }
         else
         {
@@ -94,7 +105,7 @@ public class EZRadiusManager : IEZRadiusManager
         }
     }
     
-    public async Task<APIResultModel> CreateRadiusPolicy(RadiusPolicyModel policy)
+    public async Task<APIResultModel> CreateRadiusPolicyAsync(RadiusPolicyModel policy)
     {
         await GetTokenAsync();
         if (policy == null)
@@ -102,7 +113,7 @@ public class EZRadiusManager : IEZRadiusManager
             throw new ArgumentNullException(nameof(policy));
         }
         string jsonPayload = JsonSerializer.Serialize(policy);
-        APIResultModel createRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
+        APIResultModel createRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
         if (createRadiusPolicyResponse.Success)
         {
             return createRadiusPolicyResponse;
@@ -113,7 +124,7 @@ public class EZRadiusManager : IEZRadiusManager
         }
     }
     
-    public async Task<APIResultModel> EditRadiusPolicy(RadiusPolicyModel policy)
+    public async Task<APIResultModel> EditRadiusPolicyAsync(RadiusPolicyModel policy)
     {
         await GetTokenAsync();
         if (policy == null)
@@ -121,7 +132,7 @@ public class EZRadiusManager : IEZRadiusManager
             throw new ArgumentNullException(nameof(policy));
         }
         string jsonPayload = JsonSerializer.Serialize(policy);
-        APIResultModel editRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Put);
+        APIResultModel editRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
         if (editRadiusPolicyResponse.Success)
         {
             return editRadiusPolicyResponse;
@@ -132,7 +143,7 @@ public class EZRadiusManager : IEZRadiusManager
         }
     }
     
-    public async Task<APIResultModel> DeleteRadiusPolicy(RadiusPolicyModel policy)
+    public async Task<APIResultModel> DeleteRadiusPolicyAsync(RadiusPolicyModel policy)
     {
         await GetTokenAsync();
         if (policy == null)
@@ -140,7 +151,7 @@ public class EZRadiusManager : IEZRadiusManager
             throw new ArgumentNullException(nameof(policy));
         }
         string jsonPayload = JsonSerializer.Serialize(policy);
-        APIResultModel deleteRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "api/Policies/DeleteRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Delete);
+        APIResultModel deleteRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/DeleteRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
         if (deleteRadiusPolicyResponse.Success)
         {
             return deleteRadiusPolicyResponse;
@@ -150,11 +161,30 @@ public class EZRadiusManager : IEZRadiusManager
             throw new HttpRequestException("Error deleting radius policy" + deleteRadiusPolicyResponse.Message);
         }
     }
+
+    public async Task<APIResultModel> GetAuthAuditLogsAsync(TimeFrameModel timeFrame)
+    {
+        await GetTokenAsync();
+        if (timeFrame == null)
+        {
+            throw new ArgumentNullException(nameof(timeFrame));
+        }
+
+        string payload = JsonSerializer.Serialize(timeFrame);
+        APIResultModel getAuthAuditLogsResponse = await _httpClient.CallGenericAsync(_url + "/api/Logs/GetAuthAuditLogs", payload, _token.Token, HttpMethod.Post);
+        if (getAuthAuditLogsResponse.Success)
+        {
+            return getAuthAuditLogsResponse;
+        }
+        else
+        {
+            throw new HttpRequestException("Error getting auth logs" + getAuthAuditLogsResponse.Message);
+        }
+    }
     
     private async Task GetTokenAsync()
     {
-        TokenRequestContext authContext =
-            new(new[] { "https://management.core.windows.net/.default" });
+        TokenRequestContext authContext = new([_scopes]);
         if (_azureTokenCredential == null)
         {
             throw new ArgumentNullException(nameof(_azureTokenCredential));
