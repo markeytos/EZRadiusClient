@@ -37,7 +37,7 @@ public interface IEZRadiusManager
     /// </summary>
     /// <param name="timeFrame"></param> Model for the time frame to get logs for
     /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
-    Task<APIResultModel> GetAuthAuditLogsAsync(TimeFrameModel timeFrame);
+    Task<List<AuthenticationEventModel>> GetAuthAuditLogsAsync(TimeFrameModel timeFrame);
 }
 
 public class EZRadiusManager : IEZRadiusManager
@@ -135,7 +135,7 @@ public class EZRadiusManager : IEZRadiusManager
         }
     }
 
-    public async Task<APIResultModel> GetAuthAuditLogsAsync(TimeFrameModel timeFrame)
+    public async Task<List<AuthenticationEventModel>> GetAuthAuditLogsAsync(TimeFrameModel timeFrame)
     {
         await GetTokenAsync();
         if (timeFrame == null)
@@ -145,9 +145,10 @@ public class EZRadiusManager : IEZRadiusManager
 
         string payload = JsonSerializer.Serialize(timeFrame);
         APIResultModel getAuthAuditLogsResponse = await _httpClient.CallGenericAsync(_url + "/api/Logs/GetAuthAuditLogs", payload, _token.Token, HttpMethod.Post);
-        if (getAuthAuditLogsResponse.Success)
+        if (getAuthAuditLogsResponse.Success && getAuthAuditLogsResponse.Message != null)
         {
-            return getAuthAuditLogsResponse;
+            List<AuthenticationEventModel>? authenticationLogs = JsonSerializer.Deserialize<List<AuthenticationEventModel>>(getAuthAuditLogsResponse.Message);
+            return authenticationLogs;
         }
         else
         {

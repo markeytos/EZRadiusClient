@@ -8,7 +8,7 @@ public class TimeFrameModel
     public TimeFrameModel() { }
     
     [JsonPropertyName("DateFrom")]
-    public DateTime DateFrom { get; set; } = DateTime.Now.AddDays(-1);
+    public DateTime DateFrom { get; set; } = DateTime.Now.AddDays(-2);
     
     [JsonPropertyName("DateTo")]
     public DateTime DateTo { get; set; } = DateTime.Now;

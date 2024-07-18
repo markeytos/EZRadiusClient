@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Numerics;
+using System.Text.Json;
 using EZRadiusClient.Managers;
 using Azure.Identity;
 using CsvHelper;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 Console.WriteLine("Welcome to the EZRadius Sample");
-int result = Parser.Default.ParseArguments<ShowPoliciesArgModel, DownloadIPAddressArgModel, UpdateIPAddressArgModel, DeletePolicyArgModel>(args).MapResult( (ShowPoliciesArgModel operation) => CallShowPoliciesAsync(operation).GetAwaiter().GetResult(), (DownloadIPAddressArgModel operation) => CallDownloadIPAddressesAsync(operation).GetAwaiter().GetResult(), (UpdateIPAddressArgModel operation) => CallUpdateIPAddressesAsync(operation).GetAwaiter().GetResult(),  (DeletePolicyArgModel operation) => CallDeleteRadiusPolicyAsync(operation).GetAwaiter().GetResult(), errs => ProcessErrors(errs));
+int result = Parser.Default.ParseArguments<ShowPoliciesArgModel, DownloadIPAddressArgModel, UpdateIPAddressArgModel, DeletePolicyArgModel, GetAuditLogsArgModel>(args).MapResult( (ShowPoliciesArgModel operation) => CallShowPoliciesAsync(operation).GetAwaiter().GetResult(), (DownloadIPAddressArgModel operation) => CallDownloadIPAddressesAsync(operation).GetAwaiter().GetResult(), (UpdateIPAddressArgModel operation) => CallUpdateIPAddressesAsync(operation).GetAwaiter().GetResult(),  (DeletePolicyArgModel operation) => CallDeleteRadiusPolicyAsync(operation).GetAwaiter().GetResult(), (GetAuditLogsArgModel operation) => CallGetAuditLogsAsync(operation).GetAwaiter().GetResult(),errs => ProcessErrors(errs));
 if (result != 0)
 {
     Console.WriteLine("Error parsing arguments, please try again. Use --help or check documentation for more information.");
@@ -147,6 +148,32 @@ async Task<int> CallDeleteRadiusPolicyAsync(DeletePolicyArgModel passedArguments
     Console.WriteLine("Deleting " + currentRadiusPolicies[chosenPolicyIndex].PolicyName);
     APIResultModel deletePolicyResult = await ezRadiusClient.DeleteRadiusPolicyAsync(currentRadiusPolicies[chosenPolicyIndex]);
     Console.WriteLine(deletePolicyResult.Message);
+    
+    return 0;
+}
+
+async Task<int> CallGetAuditLogsAsync(GetAuditLogsArgModel passedArguments)
+{
+    ArgumentsModel parameters = new(passedArguments);
+    parameters = ValidateArguments(parameters);
+    IEZRadiusManager ezRadiusClient = InitializeEZRadiusManager(parameters);
+    
+    TimeFrameModel timeFrame = new();
+    
+    Console.WriteLine("Getting Authentication Audit Logs for past 2 days...");
+    List<AuthenticationEventModel> getAuditLogsResult = await ezRadiusClient.GetAuthAuditLogsAsync(timeFrame);
+    Console.WriteLine($"Found {getAuditLogsResult.Count} logs");
+    foreach (AuthenticationEventModel authenticationEventLog in getAuditLogsResult)
+    {
+        Console.WriteLine($"=== {authenticationEventLog.DateCreated} ===");
+        Console.WriteLine($"User: {authenticationEventLog.UserName}");
+        Console.WriteLine($"Radius IP: {authenticationEventLog.RADIUSIP}");
+        Console.WriteLine($"Requesting IP: {authenticationEventLog.RequestingIP}");
+        Console.WriteLine($"Authentication Type: {authenticationEventLog.AuthenticationType}");
+        Console.WriteLine($"Access Policy Name: {authenticationEventLog.AccessPolicyName}");
+        Console.WriteLine($"Message: {authenticationEventLog.Message}");
+        Console.WriteLine($"Successful: {authenticationEventLog.Successful}");
+    }
     
     return 0;
 }
