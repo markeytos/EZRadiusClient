@@ -105,14 +105,14 @@ public class EZRadiusManager : IEZRadiusManager
             throw new ArgumentNullException(nameof(policy));
         }
         string jsonPayload = JsonSerializer.Serialize(policy);
-        APIResultModel createRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
-        if (createRadiusPolicyResponse.Success)
+        APIResultModel createOrEditRadiusPolicyResponse = await _httpClient.CallGenericAsync(_url + "/api/Policies/SaveOrCreateRadiusPolicy", jsonPayload, _token.Token, HttpMethod.Post);
+        if (createOrEditRadiusPolicyResponse.Success)
         {
-            return createRadiusPolicyResponse;
+            return createOrEditRadiusPolicyResponse;
         }
         else
         {
-            throw new HttpRequestException("Error creating or editing radius policy" + createRadiusPolicyResponse.Message);
+            throw new HttpRequestException("Error creating or editing radius policy" + createOrEditRadiusPolicyResponse.Message);
         }
     }
     

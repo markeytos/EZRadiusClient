@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Numerics;
 using EZRadiusClient.Managers;
 using Azure.Identity;
 using CsvHelper;
@@ -8,54 +9,149 @@ using EZRadiusClient.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-ArgumentsModel passedArguments = new();
-
 Console.WriteLine("Welcome to the EZRadius Sample");
-int result = Parser.Default.ParseArguments<ArgumentsModel>(args).MapResult((opts) => InitializeVariables(opts), errs => ProcessErrors(errs));
+int result = Parser.Default.ParseArguments<ShowPoliciesArgModel, DownloadIPAddressArgModel, UpdateIPAddressArgModel, DeletePolicyArgModel>(args).MapResult( (ShowPoliciesArgModel operation) => CallShowPoliciesAsync(operation).GetAwaiter().GetResult(), (DownloadIPAddressArgModel operation) => CallDownloadIPAddressesAsync(operation).GetAwaiter().GetResult(), (UpdateIPAddressArgModel operation) => CallUpdateIPAddressesAsync(operation).GetAwaiter().GetResult(),  (DeletePolicyArgModel operation) => CallDeleteRadiusPolicyAsync(operation).GetAwaiter().GetResult(), errs => ProcessErrors(errs));
 if (result != 0)
 {
     Console.WriteLine("Error parsing arguments, please try again. Use --help or check documentation for more information.");
     return;
 }
 
-if (string.IsNullOrWhiteSpace(passedArguments.ADUrl))
+ArgumentsModel ValidateArguments(ArgumentsModel passedArguments)
 {
-    passedArguments.ADUrl = "https://login.microsoftonline.com/";
-}
-if (string.IsNullOrWhiteSpace(passedArguments.InstanceUrl))
-{
-    passedArguments.InstanceUrl = "https://usa.ezradius.io/";
-}
-if (string.IsNullOrWhiteSpace(passedArguments.Scope))
-{
-    passedArguments.Scope = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default";
+    if (string.IsNullOrWhiteSpace(passedArguments.ADUrl))
+    {
+        passedArguments.ADUrl = "https://login.microsoftonline.com/";
+    }
+    if (string.IsNullOrWhiteSpace(passedArguments.InstanceUrl))
+    {
+        passedArguments.InstanceUrl = "https://usa.ezradius.io/";
+    }
+    if (string.IsNullOrWhiteSpace(passedArguments.Scope))
+    {
+        passedArguments.Scope = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default";
+    }
+    return passedArguments;
 }
 
-ILogger logger = CreateLogger(passedArguments.AppInsight);
-var cliAuthentication = new AzureCliCredentialOptions { AuthorityHost = new Uri(passedArguments.ADUrl) };
-IEZRadiusManager ezRadiusClient = new EZRadiusManager(new HttpClient(), logger, new AzureCliCredential(cliAuthentication), passedArguments.InstanceUrl, passedArguments.Scope);
-
-try
+IEZRadiusManager InitializeEZRadiusManager(ArgumentsModel passedArguments)
 {
-    Console.WriteLine("Getting current Radius Policies");
+    ILogger logger = CreateLogger(passedArguments.AppInsightConnection);
+    var cliAuthentication = new AzureCliCredentialOptions { AuthorityHost = new Uri(passedArguments.ADUrl) };
+    IEZRadiusManager ezRadiusClient = new EZRadiusManager(new HttpClient(), logger, new AzureCliCredential(cliAuthentication), passedArguments.InstanceUrl, passedArguments.Scope);
+    return ezRadiusClient;
+}
+
+int ChooseRadiusPolicy(List<RadiusPolicyModel> currentRadiusPolicies, string action)
+{
+    Console.WriteLine("Choose a policy to " + action + ": ");
+    for (int policyIndex = 0; policyIndex < currentRadiusPolicies.Count; policyIndex++)
+    {
+        Console.WriteLine($"Enter {policyIndex} to select {currentRadiusPolicies[policyIndex].PolicyName}");
+    }
+    int chosenPolicyIndex = -1;
+    while (chosenPolicyIndex >= currentRadiusPolicies.Count || chosenPolicyIndex < 0)
+    {
+        string? userInput = Console.ReadLine();
+        if (!int.TryParse(userInput, out chosenPolicyIndex))
+        {
+            Console.WriteLine($"Invalid selection: Please enter a value between 0 and {currentRadiusPolicies.Count - 1}");
+        }
+    }
+    return chosenPolicyIndex;
+}
+
+async Task<int> CallShowPoliciesAsync(ShowPoliciesArgModel passedArguments)
+{
+    ArgumentsModel parameters = new(passedArguments);
+    parameters = ValidateArguments(parameters);
+    IEZRadiusManager ezRadiusClient = InitializeEZRadiusManager(parameters);
+    
+    Console.WriteLine("Getting current Radius policies...");
+    List<RadiusPolicyModel> currentRadiusPolicies = await ezRadiusClient.GetRadiusPoliciesAsync();
+    Console.WriteLine($"Found {currentRadiusPolicies.Count} policies:");
+    
+    foreach (RadiusPolicyModel radiusPolicy in currentRadiusPolicies)
+    {
+        Console.WriteLine($"=== {radiusPolicy.PolicyName} ===");
+        Console.WriteLine($"Policy ID: {radiusPolicy.PolicyID}");
+        Console.WriteLine($"Subscription ID: {radiusPolicy.SubscriptionID}");
+        Console.WriteLine($"Allowed IP Addresses: {radiusPolicy.AllowedIPAddresses.Count}");
+        foreach (AllowedIPAddressModel allowedIPAddress in radiusPolicy.AllowedIPAddresses)
+        {
+            Console.WriteLine($"\t {allowedIPAddress.ClientIPAddress}");
+        }
+        Console.WriteLine($"Access Policies: {radiusPolicy.AccessPolicies.Count}");
+        foreach (AccessPolicyModel accessPolicy in radiusPolicy.AccessPolicies)
+        {
+            Console.WriteLine($"\t {accessPolicy.PolicyName}");
+        }
+        Console.WriteLine($"Allowed Certificate Authorities: {radiusPolicy.AllowedCertificateAuthorities.Count}");
+        foreach (AllowedCertificateAuthoritiesModel allowedCA in radiusPolicy.AllowedCertificateAuthorities)
+        {
+            Console.WriteLine($"\t {allowedCA.SubjectName}");
+        }
+        Console.WriteLine($"Server Certificate Authority: {radiusPolicy.ServerCertificate.SubjectName}");
+    }
+    
+    return 0;
+}
+
+async Task<int> CallDownloadIPAddressesAsync(DownloadIPAddressArgModel passedArguments)
+{
+    ArgumentsModel parameters = new(passedArguments);
+    parameters = ValidateArguments(parameters);
+    IEZRadiusManager ezRadiusClient = InitializeEZRadiusManager(parameters);
+    
+    Console.WriteLine("Getting current Radius policies...");
     List<RadiusPolicyModel> currentRadiusPolicies = await ezRadiusClient.GetRadiusPoliciesAsync();
     Console.WriteLine($"Found {currentRadiusPolicies.Count} policies");
     
-    Console.WriteLine("Grabbing IP Addresses from current policy and saving to CSV file");
-    APIResultModel getIPAddressesResult = GetAllowedIPAddressesInCSVAsync(passedArguments.csvFilePath, currentRadiusPolicies[0]);
+    int chosenPolicyIndex = ChooseRadiusPolicy(currentRadiusPolicies, "download IP addresses from");
+    Console.WriteLine("Grabbing IP Addresses from " + currentRadiusPolicies[chosenPolicyIndex].PolicyName + " and saving them to CSV file");
+    APIResultModel getIPAddressesResult = PutAllowedIPAddressesInCSVAsync(parameters.csvFilePath, currentRadiusPolicies[chosenPolicyIndex]);
     Console.WriteLine(getIPAddressesResult.Message);
     
-    Console.WriteLine("Updating Policy IP Addresses from CSV file");
-    APIResultModel updateIPAddressesResult = await UpdateIPAddressesWithCSVAsync(passedArguments.csvFilePath, currentRadiusPolicies[0]);
-    Console.WriteLine(updateIPAddressesResult.Message);
-}
-catch (Exception e)
-{
-    logger.LogError(e, "Error occured while getting or updating policy");
-    Console.WriteLine(e);
+    return 0;
 }
 
-async Task<APIResultModel> UpdateIPAddressesWithCSVAsync(string pathToCSVFile, RadiusPolicyModel currentPolicy)
+async Task<int> CallUpdateIPAddressesAsync(UpdateIPAddressArgModel passedArguments)
+{
+    ArgumentsModel parameters = new(passedArguments);
+    parameters = ValidateArguments(parameters);
+    IEZRadiusManager ezRadiusClient = InitializeEZRadiusManager(parameters);
+    
+    Console.WriteLine("Getting current Radius policies...");
+    List<RadiusPolicyModel> currentRadiusPolicies = await ezRadiusClient.GetRadiusPoliciesAsync();
+    Console.WriteLine($"Found {currentRadiusPolicies.Count} policies");
+    
+    int chosenPolicyIndex = ChooseRadiusPolicy(currentRadiusPolicies, "upload IP addresses to");
+    Console.WriteLine("Updating IP Addresses for " + currentRadiusPolicies[chosenPolicyIndex].PolicyName + " from CSV file");
+    APIResultModel updateIPAddressesResult = await UpdateIPAddressesWithCSVAsync(parameters.csvFilePath, currentRadiusPolicies[chosenPolicyIndex], ezRadiusClient);
+    Console.WriteLine(updateIPAddressesResult.Message);
+    
+    return 0;
+}
+
+async Task<int> CallDeleteRadiusPolicyAsync(DeletePolicyArgModel passedArguments)
+{
+    ArgumentsModel parameters = new(passedArguments);
+    parameters = ValidateArguments(parameters);
+    IEZRadiusManager ezRadiusClient = InitializeEZRadiusManager(parameters);
+    
+    Console.WriteLine("Getting current Radius policies...");
+    List<RadiusPolicyModel> currentRadiusPolicies = await ezRadiusClient.GetRadiusPoliciesAsync();
+    Console.WriteLine($"Found {currentRadiusPolicies.Count} policies");
+    
+    int chosenPolicyIndex = ChooseRadiusPolicy(currentRadiusPolicies, "delete");
+    Console.WriteLine("Deleting " + currentRadiusPolicies[chosenPolicyIndex].PolicyName);
+    APIResultModel deletePolicyResult = await ezRadiusClient.DeleteRadiusPolicyAsync(currentRadiusPolicies[chosenPolicyIndex]);
+    Console.WriteLine(deletePolicyResult.Message);
+    
+    return 0;
+}
+
+async Task<APIResultModel> UpdateIPAddressesWithCSVAsync(string pathToCSVFile, RadiusPolicyModel currentPolicy, IEZRadiusManager ezRadiusClient)
 {
     try
     {
@@ -76,7 +172,7 @@ async Task<APIResultModel> UpdateIPAddressesWithCSVAsync(string pathToCSVFile, R
     }
 }
 
-APIResultModel GetAllowedIPAddressesInCSVAsync(string pathToCSVFile, RadiusPolicyModel currentPolicy)
+APIResultModel PutAllowedIPAddressesInCSVAsync(string pathToCSVFile, RadiusPolicyModel currentPolicy)
 {
     try
     {
@@ -92,12 +188,6 @@ APIResultModel GetAllowedIPAddressesInCSVAsync(string pathToCSVFile, RadiusPolic
     {
         return new APIResultModel(false, e.Message);
     }
-}
-
-int InitializeVariables(ArgumentsModel opts)
-{
-    passedArguments = opts;
-    return 0;
 }
 
 int ProcessErrors(IEnumerable<Error> errs)
