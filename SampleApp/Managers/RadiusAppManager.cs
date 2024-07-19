@@ -191,7 +191,7 @@ public class RadiusAppManager
 
         try
         {
-            Console.WriteLine("Getting Authentication Audit Logs for past 2 days...");
+            Console.WriteLine($"Getting Authentication Audit Logs for past {parameters.Days.Value} days...");
             List<AuthenticationEventModel> getAuditLogsResult = await ezRadiusClient.GetAuthAuditLogsAsync(timeFrame);
             Console.WriteLine($"Found {getAuditLogsResult.Count} logs");
             foreach (AuthenticationEventModel authenticationEventLog in getAuditLogsResult)
