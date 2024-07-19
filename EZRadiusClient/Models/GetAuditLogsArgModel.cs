@@ -16,5 +16,8 @@ public class GetAuditLogsArgModel
 
     [Option('a', "adUrl", Required = false, HelpText = "URL for the target Active Directory (Entra ID) instance")]
     public string ADUrl { get; set; } = string.Empty;
+
+    [Option('d', "days", Required = true, HelpText = "Number of days to fetch logs for")]
+    public int Days { get; set; }
 }
 

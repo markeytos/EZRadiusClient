@@ -5,6 +5,12 @@ namespace EZRadiusClient.Models;
 
 public class AllowedIPAddressModel
 {
+    public AllowedIPAddressModel()
+    {
+        ClientIPAddress = String.Empty;
+        SharedSecret = String.Empty;
+    }
+    
     public AllowedIPAddressModel(string clientIpAddress, string sharedSecret)
     {
         ClientIPAddress = clientIpAddress;

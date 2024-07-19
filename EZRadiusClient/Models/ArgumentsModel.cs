@@ -8,6 +8,7 @@ public class ArgumentsModel
         InstanceUrl = arguments.InstanceUrl;
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
+        PolicyName = arguments.PolicyName;
     }
 
     public ArgumentsModel(DownloadIPAddressArgModel arguments)
@@ -16,7 +17,8 @@ public class ArgumentsModel
         InstanceUrl = arguments.InstanceUrl;
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
-        csvFilePath = arguments.OutputFilePath;
+        CsvFilePath = arguments.OutputFilePath;
+        PolicyName = arguments.PolicyName;
     }
 
     public ArgumentsModel(UpdateIPAddressArgModel arguments)
@@ -25,7 +27,8 @@ public class ArgumentsModel
         InstanceUrl = arguments.InstanceUrl;
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
-        csvFilePath = arguments.InputFilePath;
+        CsvFilePath = arguments.InputFilePath;
+        PolicyName = arguments.PolicyName;
     }
 
     public ArgumentsModel(ShowPoliciesArgModel arguments)
@@ -42,6 +45,7 @@ public class ArgumentsModel
         InstanceUrl = arguments.InstanceUrl;
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
+        Days = arguments.Days;
     }
     
     public string Scope { get; set; }
@@ -52,5 +56,9 @@ public class ArgumentsModel
     
     public string AppInsightConnection { get; set; }
 
-    public string? csvFilePath { get; set; } = string.Empty;
+    public string? CsvFilePath { get; set; }
+    
+    public int? Days { get; set; }
+    
+    public string? PolicyName { get; set; }
 }

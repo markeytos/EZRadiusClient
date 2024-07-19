@@ -37,10 +37,12 @@ Building off of the previous command, this command also calls the ```GetRadiusPo
     
     -l, --log            The Azure Application Insights connection string. (Optional)
     
-    -o, --output         The output file path to save or read the IP addresses and their secrets from Radius policy.
+    -o, --output         The output file path to save or read the IP addresses and their secrets from Radius policy. (Required)
+    
+    -n, --name           The name of the policy to download the IP addresses from. (Required)
 ```
 
-Sample Call: ```dotnet run download -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -o <path_to_output_file>```
+Sample Call: ```dotnet run download -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -o <path_to_output_file> -n <policy_name>```
 
 
 ## Updating Allowed IP Addresses for Policy
@@ -56,10 +58,12 @@ This command utilizes the ```CreateOrEditRadiusPolicyAsync()``` method to make c
     
     -l, --log            The Azure Application Insights connection string. (Optional)
     
-    -i, --input         The input file path containing IP addresses and their secrets for updating Radius policy.
+    -i, --input          The input file path containing IP addresses and their secrets for updating Radius policy. (Required)
+    
+    -n, --name           The name of the policy to update the IP addresses for. (Required)
 ```
 
-Sample Call: ```dotnet run upload -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -i <path_to_input_file>```
+Sample Call: ```dotnet run upload -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -i <path_to_input_file> -n <policy_name>```
 
 ## Deleting Radius Policy
 
@@ -73,9 +77,11 @@ Deleting a Radius policy can be done using the ```delete``` verb. This command c
     -a, --adUrl          The Azure Active Directory instance (Entra ID) url.
     
     -l, --log            The Azure Application Insights connection string. (Optional)   
+    
+    -n, --name           The name of the policy to delete. (Required)
 ```
 
-Sample Call: ```dotnet run delete -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
+Sample Call: ```dotnet run delete -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -n <policy_name>```
 
 ## Displaying Authorization Logs
 
@@ -89,6 +95,8 @@ Similar to the displaying Radius policies, this command gets authentication logs
     -a, --adUrl          The Azure Active Directory instance (Entra ID) url.
     
     -l, --log            The Azure Application Insights connection string. (Optional)
+    
+    -d, --days           The number of days to get logs from. (Required)
 ```
 
-Sample Call: ```dotnet run getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
+Sample Call: ```dotnet run getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```

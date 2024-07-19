@@ -4,9 +4,15 @@ namespace  EZRadiusClient.Models;
 
 public class TimeFrameModel
 {
+    public TimeFrameModel(int days)
+    {
+        DateFrom = DateTime.Now.AddDays(-days);
+        DateTo = DateTime.Now;
+    }
+    
     [JsonPropertyName("DateFrom")]
-    public DateTime DateFrom { get; set; } = DateTime.Now.AddDays(-2);
+    public DateTime DateFrom { get; set; }
     
     [JsonPropertyName("DateTo")]
-    public DateTime DateTo { get; set; } = DateTime.Now;
+    public DateTime DateTo { get; set; }
 }

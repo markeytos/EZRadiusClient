@@ -16,4 +16,7 @@ public class DeletePolicyArgModel
 
     [Option('a', "adUrl", Required = false, HelpText = "URL for the target Active Directory (Entra ID) instance")]
     public string ADUrl { get; set; } = string.Empty;
+    
+    [Option('n', "name", Required = true, HelpText = "Required. Name of the Radius policy to download IP addresses from")]
+    public string PolicyName { get; set; } = string.Empty;
 }
