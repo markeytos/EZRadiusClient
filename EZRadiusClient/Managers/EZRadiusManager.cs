@@ -10,33 +10,34 @@ namespace EZRadiusClient.Managers;
 public interface IEZRadiusManager
 {
     /// <summary>
-    /// Gets the current Radius policies from the EZRadius Database
+    /// Gets all the current Radius policies from the EZRadius instance database
     /// </summary>
     /// <returns>List of <see cref="RadiusPolicyModel"/></returns> Radius Policies
     /// <exception cref="HttpRequestException">Error contacting server</exception>
     Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync();
     
     /// <summary>
-    /// Creates a new Radius policy or overwrites existing Radius policy in the EZRadius Database with passed policy
+    /// Creates a new Radius policy or overwrites existing Radius policy in the EZRadius database with passed policy
     /// </summary>
-    /// <param name="policy"></param> <see cref="RadiusPolicyModel"/> Model containing attributes for policy to be created or edited
-    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
+    /// <param name="policy"><see cref="RadiusPolicyModel"/> to be created or edited</param>
+    /// <returns><see cref="APIResultModel"/> with success bool and results or error message</returns>
     /// <exception cref="HttpRequestException">Error contacting server</exception>
     Task<APIResultModel> CreateOrEditRadiusPolicyAsync(RadiusPolicyModel policy);
 
     /// <summary>
     /// Deletes an existing Radius policy in the EZRadius Database with passed policy
     /// </summary>
-    /// <param name="policy"></param> Model containing attributes for policy to be deleted
-    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
+    /// <param name="policy"><see cref="RadiusPolicyModel"/> to be created or edited</param>
+    /// <returns><see cref="APIResultModel"/> with success bool and message</returns>
     /// <exception cref="HttpRequestException">Error contacting server</exception>
     Task<APIResultModel> DeleteRadiusPolicyAsync(RadiusPolicyModel policy);
 
     /// <summary>
     /// Gets the Authorization Audit logs for the passed time frame
     /// </summary>
-    /// <param name="timeFrame"></param> Model for the time frame to get logs for
-    /// <returns><see cref="APIResultModel"/></returns> with success bool and results or error message
+    /// <param name="timeFrame"><see cref="TimeFrameModel"/> containing start and end date</param>
+    /// <returns>List of <see cref="AuthenticationEventModel"/></returns> containing logging information
+    /// <exception cref="HttpRequestException">Error contacting server</exception>
     Task<List<AuthenticationEventModel>> GetAuthAuditLogsAsync(TimeFrameModel timeFrame);
 }
 
