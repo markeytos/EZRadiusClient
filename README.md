@@ -59,7 +59,7 @@ This command utilizes the ```CreateOrEditRadiusPolicyAsync()``` method to make c
     -i, --input         The input file path containing IP addresses and their secrets for updating Radius policy.
 ```
 
-Sample Call: ```dotnet run download -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -i <path_to_input_file>```
+Sample Call: ```dotnet run upload -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -i <path_to_input_file>```
 
 ## Deleting Radius Policy
 
@@ -75,7 +75,7 @@ Deleting a Radius policy can be done using the ```delete``` verb. This command c
     -l, --log            The Azure Application Insights connection string. (Optional)   
 ```
 
-Sample Call: ```dotnet run show -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
+Sample Call: ```dotnet run delete -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
 
 ## Displaying Authorization Logs
 
@@ -91,4 +91,4 @@ Similar to the displaying Radius policies, this command gets authentication logs
     -l, --log            The Azure Application Insights connection string. (Optional)
 ```
 
-Sample Call: ```dotnet run show -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
+Sample Call: ```dotnet run getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
