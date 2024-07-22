@@ -5,13 +5,13 @@ namespace EZRadiusClient.Models;
 public class APIResultModel
 {
     public APIResultModel() { }
-    
+
     public APIResultModel(bool success, string message)
     {
         Success = success;
         Message = message;
     }
-    
+
     [JsonPropertyName("Success")]
     public bool Success { get; set; }
 

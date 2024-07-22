@@ -20,13 +20,18 @@ public class InputService
         }
         return passedArguments;
     }
-    
-    public static int ChooseRadiusPolicy(List<RadiusPolicyModel> currentRadiusPolicies, string action)
+
+    public static int ChooseRadiusPolicy(
+        List<RadiusPolicyModel> currentRadiusPolicies,
+        string action
+    )
     {
         Console.WriteLine("Choose a policy to " + action + ": ");
         for (int policyIndex = 0; policyIndex < currentRadiusPolicies.Count; policyIndex++)
         {
-            Console.WriteLine($"Enter {policyIndex} to select {currentRadiusPolicies[policyIndex].PolicyName}");
+            Console.WriteLine(
+                $"Enter {policyIndex} to select {currentRadiusPolicies[policyIndex].PolicyName}"
+            );
         }
         int chosenPolicyIndex = -1;
         while (chosenPolicyIndex >= currentRadiusPolicies.Count || chosenPolicyIndex < 0)
@@ -34,7 +39,9 @@ public class InputService
             string? userInput = Console.ReadLine();
             if (!int.TryParse(userInput, out chosenPolicyIndex))
             {
-                Console.WriteLine($"Invalid selection: Please enter a value between 0 and {currentRadiusPolicies.Count - 1}");
+                Console.WriteLine(
+                    $"Invalid selection: Please enter a value between 0 and {currentRadiusPolicies.Count - 1}"
+                );
             }
         }
         return chosenPolicyIndex;

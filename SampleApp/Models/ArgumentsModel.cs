@@ -38,7 +38,7 @@ public class ArgumentsModel
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
     }
-    
+
     public ArgumentsModel(GetAuditLogsArgModel arguments)
     {
         Scope = arguments.Scope;
@@ -47,18 +47,18 @@ public class ArgumentsModel
         AppInsightConnection = arguments.AppInsightConnection;
         Days = arguments.Days;
     }
-    
+
     public string Scope { get; set; }
-    
+
     public string InstanceUrl { get; set; }
-    
+
     public string ADUrl { get; set; }
-    
+
     public string AppInsightConnection { get; set; }
 
     public string? CsvFilePath { get; set; }
-    
+
     public int? Days { get; set; }
-    
+
     public string? PolicyName { get; set; }
 }

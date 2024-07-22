@@ -12,26 +12,25 @@ public class Program
         Console.WriteLine("Welcome to the EZRadius Sample");
         int result = await Parser
             .Default.ParseArguments<
-                ShowPoliciesArgModel, 
-                DownloadIPAddressArgModel, 
-                UpdateIPAddressArgModel, 
-                DeletePolicyArgModel, 
+                ShowPoliciesArgModel,
+                DownloadIPAddressArgModel,
+                UpdateIPAddressArgModel,
+                DeletePolicyArgModel,
                 GetAuditLogsArgModel
             >(args)
             .MapResult(
-                async (ShowPoliciesArgModel operation) => 
-                    await radiusAppManager.CallShowPoliciesAsync(operation), 
-                (DownloadIPAddressArgModel operation) => 
-                    radiusAppManager.CallDownloadIPAddressesAsync(operation), 
-                async (UpdateIPAddressArgModel operation) => 
-                    await radiusAppManager.CallUpdateIPAddressesAsync(operation),  
-                async (DeletePolicyArgModel operation) => 
-                    await radiusAppManager.CallDeleteRadiusPolicyAsync(operation), 
-                async (GetAuditLogsArgModel operation) => 
-                    await radiusAppManager.CallGetAuditLogsAsync(operation), 
-                errs => radiusAppManager.ProcessErrors(errs));
+                async (ShowPoliciesArgModel operation) =>
+                    await radiusAppManager.CallShowPoliciesAsync(operation),
+                (DownloadIPAddressArgModel operation) =>
+                    radiusAppManager.CallDownloadIPAddressesAsync(operation),
+                async (UpdateIPAddressArgModel operation) =>
+                    await radiusAppManager.CallUpdateIPAddressesAsync(operation),
+                async (DeletePolicyArgModel operation) =>
+                    await radiusAppManager.CallDeleteRadiusPolicyAsync(operation),
+                async (GetAuditLogsArgModel operation) =>
+                    await radiusAppManager.CallGetAuditLogsAsync(operation),
+                errs => radiusAppManager.ProcessErrors(errs)
+            );
         Environment.Exit(result);
     }
 }
-
-

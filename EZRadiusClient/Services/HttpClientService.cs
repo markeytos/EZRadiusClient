@@ -60,10 +60,9 @@ public class HttpClientService : IHttpClientService
             throw new ArgumentNullException(nameof(httpMethod));
         }
         APIResultModel apiResult = new();
-        HttpResponseMessage responseMessage;
         try
         {
-            responseMessage = await _retryPolicy.ExecuteAsync(
+            HttpResponseMessage responseMessage = await _retryPolicy.ExecuteAsync(
                 async () => await CreateAndSendAsync(url, jsonPayload, token, httpMethod)
             );
             apiResult.Message = await responseMessage.Content.ReadAsStringAsync();
@@ -73,7 +72,7 @@ public class HttpClientService : IHttpClientService
         {
             if (_logger != null)
             {
-                _logger.LogError(ex, "Error contacting EZCA");
+                _logger.LogError(ex, "Error contacting EZRADIUS");
             }
             apiResult.Success = false;
             if (ex.Message.Contains("One or more errors") && ex.InnerException != null)

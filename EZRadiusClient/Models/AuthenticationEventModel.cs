@@ -52,4 +52,3 @@ public class AuthenticationEventModel
     [JsonPropertyName("RADIUSIP")]
     public string RADIUSIP { get; set; } = string.Empty;
 }
-

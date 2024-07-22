@@ -17,11 +17,12 @@ public class RadiusPolicyModel
     public List<AllowedIPAddressModel> AllowedIPAddresses { get; set; } = new();
 
     [JsonPropertyName("AllowedCertificateAuthorities")]
-    public List<AllowedCertificateAuthoritiesModel> AllowedCertificateAuthorities { get; set; } = new();
+    public List<AllowedCertificateAuthoritiesModel> AllowedCertificateAuthorities { get; set; } =
+        new();
 
     [JsonPropertyName("ServerCA")]
     public ServerCAModel ServerCertificate { get; set; } = new();
 
-    [JsonPropertyName("AccessPolicies")] 
+    [JsonPropertyName("AccessPolicies")]
     public List<AccessPolicyModel> AccessPolicies { get; set; } = new();
 }

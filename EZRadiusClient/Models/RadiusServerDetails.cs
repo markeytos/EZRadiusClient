@@ -24,4 +24,3 @@ public class RadiusServerDetails
     [JsonPropertyName("ServerName")]
     public string ServerName { get; set; } = string.Empty;
 }
-

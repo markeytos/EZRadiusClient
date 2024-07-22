@@ -10,7 +10,7 @@ public class AllowedIPAddressModel
         ClientIPAddress = String.Empty;
         SharedSecret = String.Empty;
     }
-    
+
     public AllowedIPAddressModel(string clientIpAddress, string sharedSecret)
     {
         ClientIPAddress = clientIpAddress;

@@ -18,7 +18,7 @@ public class RadiusAppManager
         Console.WriteLine(errs);
         return Task.FromResult(1);
     }
-    
+
     public async Task<int> CallShowPoliciesAsync(ShowPoliciesArgModel passedArguments)
     {
         ArgumentsModel parameters = new(passedArguments);
@@ -27,7 +27,9 @@ public class RadiusAppManager
 
         try
         {
-            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(ezRadiusClient);
+            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(
+                ezRadiusClient
+            );
             foreach (RadiusPolicyModel radiusPolicy in currentRadiusPolicies)
             {
                 Console.WriteLine($"=== {radiusPolicy.PolicyName} ===");
@@ -46,13 +48,18 @@ public class RadiusAppManager
                 }
 
                 Console.WriteLine(
-                    $"Allowed Certificate Authorities: {radiusPolicy.AllowedCertificateAuthorities.Count}");
-                foreach (AllowedCertificateAuthoritiesModel allowedCA in radiusPolicy.AllowedCertificateAuthorities)
+                    $"Allowed Certificate Authorities: {radiusPolicy.AllowedCertificateAuthorities.Count}"
+                );
+                foreach (
+                    AllowedCertificateAuthoritiesModel allowedCA in radiusPolicy.AllowedCertificateAuthorities
+                )
                 {
                     Console.WriteLine($"\t {allowedCA.SubjectName}");
                 }
 
-                Console.WriteLine($"Server Certificate Authority: {radiusPolicy.ServerCertificate.SubjectName}");
+                Console.WriteLine(
+                    $"Server Certificate Authority: {radiusPolicy.ServerCertificate.SubjectName}"
+                );
             }
 
             return 0;
@@ -63,7 +70,7 @@ public class RadiusAppManager
             return 1;
         }
     }
-    
+
     public async Task<int> CallDownloadIPAddressesAsync(DownloadIPAddressArgModel passedArguments)
     {
         ArgumentsModel parameters = new(passedArguments);
@@ -72,7 +79,9 @@ public class RadiusAppManager
 
         if (string.IsNullOrWhiteSpace(parameters.PolicyName))
         {
-            Console.WriteLine("Missing Policy Name argument. Please provide a policy name to download IP addresses from");
+            Console.WriteLine(
+                "Missing Policy Name argument. Please provide a policy name to download IP addresses from"
+            );
             return 1;
         }
 
@@ -82,17 +91,25 @@ public class RadiusAppManager
             {
                 throw new Exception("Please provide a path to save the IP addresses");
             }
-            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(ezRadiusClient);
-            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies.Where(policy => policy.PolicyName == parameters.PolicyName).FirstOrDefault();
+            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(
+                ezRadiusClient
+            );
+            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies
+                .FirstOrDefault(policy => policy.PolicyName == parameters.PolicyName);
             if (chosenPolicyModel == null)
             {
                 Console.WriteLine("Policy not found");
                 return 1;
             }
-            Console.WriteLine("Grabbing IP Addresses from " + chosenPolicyModel.PolicyName +
-                              " and saving them to CSV file");
-            APIResultModel getIPAddressesResult =
-                PutAllowedIPAddressesInCSVAsync(parameters.CsvFilePath, chosenPolicyModel);
+            Console.WriteLine(
+                "Grabbing IP Addresses from "
+                    + chosenPolicyModel.PolicyName
+                    + " and saving them to CSV file"
+            );
+            APIResultModel getIPAddressesResult = PutAllowedIPAddressesInCSVAsync(
+                parameters.CsvFilePath,
+                chosenPolicyModel
+            );
             Console.WriteLine(getIPAddressesResult.Message);
             return 0;
         }
@@ -102,7 +119,7 @@ public class RadiusAppManager
             return 1;
         }
     }
-    
+
     public async Task<int> CallUpdateIPAddressesAsync(UpdateIPAddressArgModel passedArguments)
     {
         ArgumentsModel parameters = new(passedArguments);
@@ -111,7 +128,9 @@ public class RadiusAppManager
 
         if (string.IsNullOrWhiteSpace(parameters.PolicyName))
         {
-            Console.WriteLine("Missing Policy Name argument. Please provide a policy name to upload IP addresses to");
+            Console.WriteLine(
+                "Missing Policy Name argument. Please provide a policy name to upload IP addresses to"
+            );
             return 1;
         }
 
@@ -121,15 +140,22 @@ public class RadiusAppManager
             {
                 throw new Exception("Please provide a path to save the IP addresses");
             }
-            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(ezRadiusClient);
-            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies.Where(policy => policy.PolicyName == parameters.PolicyName).FirstOrDefault();
+            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(
+                ezRadiusClient
+            );
+            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies.FirstOrDefault(policy =>
+                policy.PolicyName == parameters.PolicyName
+            );
             if (chosenPolicyModel == null)
             {
                 Console.WriteLine("Policy not found");
                 return 1;
             }
-            APIResultModel updateIPAddressesResult = await UpdateIPAddressesWithCSVAsync(parameters.CsvFilePath,
-                chosenPolicyModel, ezRadiusClient);
+            APIResultModel updateIPAddressesResult = await UpdateIPAddressesWithCSVAsync(
+                parameters.CsvFilePath,
+                chosenPolicyModel,
+                ezRadiusClient
+            );
             Console.WriteLine(updateIPAddressesResult.Message);
             return 0;
         }
@@ -139,7 +165,7 @@ public class RadiusAppManager
             return 1;
         }
     }
-    
+
     public async Task<int> CallDeleteRadiusPolicyAsync(DeletePolicyArgModel passedArguments)
     {
         ArgumentsModel parameters = new(passedArguments);
@@ -148,22 +174,28 @@ public class RadiusAppManager
 
         if (string.IsNullOrWhiteSpace(parameters.PolicyName))
         {
-            Console.WriteLine("Missing Policy Name argument. Please provide a policy name to delete");
+            Console.WriteLine(
+                "Missing Policy Name argument. Please provide a policy name to delete"
+            );
             return 1;
         }
-        
+
         try
         {
-            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(ezRadiusClient);
-            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies.Where(policy => policy.PolicyName == parameters.PolicyName).FirstOrDefault();
+            List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(
+                ezRadiusClient
+            );
+            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies
+                .FirstOrDefault(policy => policy.PolicyName == parameters.PolicyName);
             if (chosenPolicyModel == null)
             {
                 Console.WriteLine("Policy not found");
                 return 1;
             }
             Console.WriteLine("Deleting " + chosenPolicyModel.PolicyName);
-            APIResultModel deletePolicyResult =
-                await ezRadiusClient.DeleteRadiusPolicyAsync(chosenPolicyModel);
+            APIResultModel deletePolicyResult = await ezRadiusClient.DeleteRadiusPolicyAsync(
+                chosenPolicyModel
+            );
             Console.WriteLine(deletePolicyResult.Message);
             return 0;
         }
@@ -172,9 +204,8 @@ public class RadiusAppManager
             Console.WriteLine(e.Message);
             return 1;
         }
-
     }
-    
+
     public async Task<int> CallGetAuditLogsAsync(GetAuditLogsArgModel passedArguments)
     {
         ArgumentsModel parameters = new(passedArguments);
@@ -183,16 +214,21 @@ public class RadiusAppManager
 
         if (!parameters.Days.HasValue)
         {
-            Console.WriteLine("Missing Days argument. Please provide a number of days to get audit logs for.");
+            Console.WriteLine(
+                "Missing Days argument. Please provide a number of days to get audit logs for."
+            );
             return 1;
         }
-        
+
         TimeFrameModel timeFrame = new(parameters.Days.Value);
 
         try
         {
-            Console.WriteLine($"Getting Authentication Audit Logs for past {parameters.Days.Value} days...");
-            List<AuthenticationEventModel> getAuditLogsResult = await ezRadiusClient.GetAuthAuditLogsAsync(timeFrame);
+            Console.WriteLine(
+                $"Getting Authentication Audit Logs for past {parameters.Days.Value} days..."
+            );
+            List<AuthenticationEventModel> getAuditLogsResult =
+                await ezRadiusClient.GetAuthAuditLogsAsync(timeFrame);
             Console.WriteLine($"Found {getAuditLogsResult.Count} logs");
             foreach (AuthenticationEventModel authenticationEventLog in getAuditLogsResult)
             {
@@ -200,7 +236,9 @@ public class RadiusAppManager
                 Console.WriteLine($"User: {authenticationEventLog.UserName}");
                 Console.WriteLine($"Radius IP: {authenticationEventLog.RADIUSIP}");
                 Console.WriteLine($"Requesting IP: {authenticationEventLog.RequestingIP}");
-                Console.WriteLine($"Authentication Type: {authenticationEventLog.AuthenticationType}");
+                Console.WriteLine(
+                    $"Authentication Type: {authenticationEventLog.AuthenticationType}"
+                );
                 Console.WriteLine($"Access Policy Name: {authenticationEventLog.AccessPolicyName}");
                 Console.WriteLine($"Message: {authenticationEventLog.Message}");
                 Console.WriteLine($"Successful: {authenticationEventLog.Successful}");
@@ -213,13 +251,16 @@ public class RadiusAppManager
             return 1;
         }
     }
-    
-    private async Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync(IEZRadiusManager ezRadiusClient)
+
+    private async Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync(
+        IEZRadiusManager ezRadiusClient
+    )
     {
         try
         {
             Console.WriteLine("Getting current Radius policies...");
-            List<RadiusPolicyModel> currentRadiusPolicies = await ezRadiusClient.GetRadiusPoliciesAsync();
+            List<RadiusPolicyModel> currentRadiusPolicies =
+                await ezRadiusClient.GetRadiusPoliciesAsync();
             Console.WriteLine($"Found {currentRadiusPolicies.Count} policies");
             return currentRadiusPolicies;
         }
@@ -228,18 +269,27 @@ public class RadiusAppManager
             throw new Exception("Error getting current radius policies" + e.Message);
         }
     }
-    
-    private async Task<APIResultModel> UpdateIPAddressesWithCSVAsync(string pathToCSVFile, RadiusPolicyModel currentPolicy, IEZRadiusManager ezRadiusClient)
+
+    private async Task<APIResultModel> UpdateIPAddressesWithCSVAsync(
+        string pathToCSVFile,
+        RadiusPolicyModel currentPolicy,
+        IEZRadiusManager ezRadiusClient
+    )
     {
         try
         {
             List<AllowedIPAddressModel> allowedIPAddresses = new();
             var reader = new StreamReader(pathToCSVFile);
-            var csvReader = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture));
+            var csvReader = new CsvReader(
+                reader,
+                new CsvConfiguration(CultureInfo.InvariantCulture)
+            );
             var records = csvReader.GetRecords<AllowedIPAddressModel>().ToList();
             foreach (var record in records)
             {
-                allowedIPAddresses.Add(new AllowedIPAddressModel(record.ClientIPAddress, record.SharedSecret));
+                allowedIPAddresses.Add(
+                    new AllowedIPAddressModel(record.ClientIPAddress, record.SharedSecret)
+                );
             }
             currentPolicy.AllowedIPAddresses = allowedIPAddresses;
             return await ezRadiusClient.CreateOrEditRadiusPolicyAsync(currentPolicy);
@@ -249,14 +299,22 @@ public class RadiusAppManager
             throw new Exception("Error updating IP addresses" + e.Message);
         }
     }
-    
-    private APIResultModel PutAllowedIPAddressesInCSVAsync(string pathToCSVFile, RadiusPolicyModel currentPolicy)
+
+    private APIResultModel PutAllowedIPAddressesInCSVAsync(
+        string pathToCSVFile,
+        RadiusPolicyModel currentPolicy
+    )
     {
         try
         {
             List<AllowedIPAddressModel> allowedIPAddresses = currentPolicy.AllowedIPAddresses;
-            using (var writer = new StreamWriter(pathToCSVFile)) 
-            using (var csvWriter = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            using (var writer = new StreamWriter(pathToCSVFile))
+            using (
+                var csvWriter = new CsvWriter(
+                    writer,
+                    new CsvConfiguration(CultureInfo.InvariantCulture)
+                )
+            )
             {
                 csvWriter.WriteRecords(allowedIPAddresses);
             }
@@ -267,15 +325,24 @@ public class RadiusAppManager
             throw new Exception("Error saving IP addresses to CSV" + e.Message);
         }
     }
-    
+
     private IEZRadiusManager InitializeEzRadiusManager(ArgumentsModel passedArguments)
     {
         ILogger logger = CreateLogger(passedArguments.AppInsightConnection);
-        var cliAuthentication = new AzureCliCredentialOptions { AuthorityHost = new Uri(passedArguments.ADUrl) };
-        IEZRadiusManager ezRadiusClient = new EZRadiusManager(new HttpClient(), logger, new AzureCliCredential(cliAuthentication), passedArguments.InstanceUrl, passedArguments.Scope);
+        var cliAuthentication = new AzureCliCredentialOptions
+        {
+            AuthorityHost = new Uri(passedArguments.ADUrl)
+        };
+        IEZRadiusManager ezRadiusClient = new EZRadiusManager(
+            new HttpClient(),
+            logger,
+            new AzureCliCredential(cliAuthentication),
+            passedArguments.InstanceUrl,
+            passedArguments.Scope
+        );
         return ezRadiusClient;
     }
-    
+
     private ILogger CreateLogger(string? appInsightsKey)
     {
         IServiceCollection services = new ServiceCollection();
@@ -290,7 +357,7 @@ public class RadiusAppManager
                 );
             }
 #if WINDOWS
-        builder.AddEventLog();
+            builder.AddEventLog();
 #endif
         });
         IServiceProvider serviceProvider = services.BuildServiceProvider();

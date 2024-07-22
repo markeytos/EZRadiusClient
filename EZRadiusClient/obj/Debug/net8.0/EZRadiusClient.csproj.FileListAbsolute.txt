@@ -1,0 +1,13 @@
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\bin\Debug\net8.0\EZRadiusClient.deps.json
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\bin\Debug\net8.0\EZRadiusClient.dll
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\bin\Debug\net8.0\EZRadiusClient.pdb
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.csproj.AssemblyReference.cache
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.AssemblyInfoInputs.cache
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.AssemblyInfo.cs
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.csproj.CoreCompileInputs.cache
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.sourcelink.json
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.dll
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\refint\EZRadiusClient.dll
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\EZRadiusClient.pdb
+C:\Users\Igal\Git\EZRadiusClient\EZRadiusClient\obj\Debug\net8.0\ref\EZRadiusClient.dll
