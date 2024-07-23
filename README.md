@@ -7,6 +7,7 @@ To run the SampleApp, it requires a token scope ID, a url for EZRadius instance 
 ## Getting Started
 1) Add the Nuget Package to your project with ```dotnet add package EZRadiusClient ```
 2) Use the SampleApp to see how the client can be used and configured (must have EZRadius instance with a Radius policy)
+3) If you would like to call the sample app from the command line, you can download a signed version from [here](https://download.keytos.io/Downloads/EZRADIUS/RADIUSConsole.exe)
 
 ## Displaying Radius Policies
 
