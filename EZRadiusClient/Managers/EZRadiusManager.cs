@@ -54,7 +54,7 @@ public class EZRadiusManager : IEZRadiusManager
         ILogger? logger = null,
         TokenCredential? azureTokenCredential = null,
         string baseUrl = "https://usa.ezradius.io/",
-        string scopes = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default"
+        string scopes = "https://management.core.windows.net/.default"
     )
     {
         if (httpClient == null)

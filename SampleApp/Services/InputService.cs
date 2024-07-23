@@ -16,7 +16,7 @@ public class InputService
         }
         if (string.IsNullOrWhiteSpace(passedArguments.Scope))
         {
-            passedArguments.Scope = "5c0e7b30-d0aa-456a-befb-df8c75e8467b/.default";
+            passedArguments.Scope = "https://management.core.windows.net/.default";
         }
         return passedArguments;
     }
