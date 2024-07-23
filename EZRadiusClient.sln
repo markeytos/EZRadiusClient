@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EZRadiusClient", "EZRadiusClient\EZRadiusClient.csproj", "{6FA75B0E-9E81-4430-A94E-6FC7BD6C9BB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "SampleApp\SampleApp.csproj", "{D6B5A0CC-3782-47F2-A3F5-2DE1B40E1DCA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FA75B0E-9E81-4430-A94E-6FC7BD6C9BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA75B0E-9E81-4430-A94E-6FC7BD6C9BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA75B0E-9E81-4430-A94E-6FC7BD6C9BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA75B0E-9E81-4430-A94E-6FC7BD6C9BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B5A0CC-3782-47F2-A3F5-2DE1B40E1DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B5A0CC-3782-47F2-A3F5-2DE1B40E1DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B5A0CC-3782-47F2-A3F5-2DE1B40E1DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B5A0CC-3782-47F2-A3F5-2DE1B40E1DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA681DCE-CAEF-4679-A1C5-36E9FFF5DF6C}
+	EndGlobalSection
+EndGlobal
