@@ -22,7 +22,7 @@ Starting with a basic feature, the ```show``` verb will display all the Radius p
     -l, --log            The Azure Application Insights connection string. (Optional)
 ```
 
-Sample Call: ```dotnet run show -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
+Sample Call: ```.\RADIUSConsole.exe show -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string>```
 
 ## Downloading Allowed IP Addresses from Policy
 
@@ -42,7 +42,7 @@ Building off of the previous command, this command also calls the ```GetRadiusPo
     -n, --name           The name of the policy to download the IP addresses from. (Required)
 ```
 
-Sample Call: ```dotnet run download -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -o <path_to_output_file> -n <policy_name>```
+Sample Call: ```.\RADIUSConsole.exe download -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -o <path_to_output_file> -n <policy_name>```
 
 
 ## Updating Allowed IP Addresses for Policy
@@ -63,7 +63,7 @@ This command utilizes the ```CreateOrEditRadiusPolicyAsync()``` method to make c
     -n, --name           The name of the policy to update the IP addresses for. (Required)
 ```
 
-Sample Call: ```dotnet run upload -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -i <path_to_input_file> -n <policy_name>```
+Sample Call: ```.\RADIUSConsole.exe upload -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -i <path_to_input_file> -n <policy_name>```
 
 ## Deleting Radius Policy
 
@@ -81,7 +81,7 @@ Deleting a Radius policy can be done using the ```delete``` verb. This command c
     -n, --name           The name of the policy to delete. (Required)
 ```
 
-Sample Call: ```dotnet run delete -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -n <policy_name>```
+Sample Call: ```.\RADIUSConsole.exe delete -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -n <policy_name>```
 
 ## Displaying Authorization Logs
 
@@ -99,4 +99,4 @@ Similar to the displaying Radius policies, this command gets authentication logs
     -d, --days           The number of days to get logs from. (Required)
 ```
 
-Sample Call: ```dotnet run getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
+Sample Call: ```.\RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
