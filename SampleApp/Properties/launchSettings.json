@@ -2,7 +2,7 @@
   "profiles": {
     "SampleApp": {
       "commandName": "Project",
-      "commandLineArgs": "show"
+      "commandLineArgs": "getlogs --url https://localhost:5003 -d 35 -f test.csv"
     }
   }
 }

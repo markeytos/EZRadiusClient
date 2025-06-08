@@ -1,0 +1,36 @@
+name: Build Client
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: EZRADIUS Client Version
+        required: true
+        default: '1.0.0'
+  
+env:
+  GH_TOKEN: ${{ github.token }}
+jobs:
+
+  build:
+    runs-on: windows-latest  
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - run: gh release create ezradius-client-v${{ inputs.version }} --title "Certificate Renewal Client v${{ inputs.version }}"
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Authenticate with Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.EZRADIUS_CLIENT_DEPLOYER  }}
+      - name: Install SignTool
+        run: dotnet tool install --global  AzureSignTool
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+      - name: Run Powershell Script 
+        run: .\SampleApp\buildAndSign.ps1
+      - name: Upload Artifacts
+        run: gh release upload ezradius-client-v${{ inputs.version }} .\SampleApp\bin\Release\net8.0-windows\win-x64\publish\RADIUSConsole.exe

@@ -46,6 +46,7 @@ public class ArgumentsModel
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
         Days = arguments.Days;
+        CsvFilePath = arguments.FileName;
     }
 
     public string Scope { get; set; }

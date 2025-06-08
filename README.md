@@ -14,7 +14,7 @@ To run the SampleApp, it requires a token scope ID, a url for EZRadius instance 
 Starting with a basic feature, the ```show``` verb will display all the Radius policies. This command calls the ```GetRadiusPoliciesAsync()``` method and prints to the console the Radius policies and their attributes currently in the passed EZRadius instance.   
 
 ```
-    -s, --scope          The token scope for the EZRadius instance.
+    -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default)
     
     -u, --url            The URL for the EZRadius instance. (Default: https://usa.ezradius.io)
     
@@ -30,7 +30,7 @@ Sample Call: ```.\RADIUSConsole.exe show -s <scope_id> -u <instance_url> -a <ad_
 Building off of the previous command, this command also calls the ```GetRadiusPoliciesAsync()``` method to get the policies, but it saves all the allowed IP addresses of a policy into a .csv file. The program asks the user which policy's IP addresses should be saved. To run this, use the ```download``` verb when running the SampleApp with the following flags. An example of the output .csv file is in the SampleApp directory and titled ```Sample.csv```.
 
 ```
-    -s, --scope          The token scope for the EZRadius instance.
+    -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default)
     
     -u, --url            The URL for the EZRadius instance. (Default: https://usa.ezradius.io)
     
@@ -51,7 +51,7 @@ Sample Call: ```.\RADIUSConsole.exe download -s <scope_id> -u <instance_url> -a 
 This command utilizes the ```CreateOrEditRadiusPolicyAsync()``` method to make changes to an existing Radius policy from the EZRadius instance. The method takes in the ```RadiusPolicyModel``` which is one of the fields returned by the ```GetRadiusPoliciesAsync()```. It takes a .csv file containing IP addresses and their secrets; the format should match that of the sample .csv file in the SampleApp directory titled ```Sample.csv```. The IP addresses will overwrite the current IP addresses for that policy, which is then saved in the EZRadius instance. This command is run using the ```upload``` verb.  
 
 ```
-    -s, --scope          The token scope for the EZRadius instance.
+    -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default)
     
     -u, --url            The URL for the EZRadius instance. (Default: https://usa.ezradius.io)
     
@@ -71,7 +71,7 @@ Sample Call: ```.\RADIUSConsole.exe upload -s <scope_id> -u <instance_url> -a <a
 Deleting a Radius policy can be done using the ```delete``` verb. This command calls the ```DeleteRadiusPolicyAsync()``` which takes in a ```RadiusPolicyModel``` and deletes that Radius policy from the EZRadius instance. This command cannot be undone, so once the policy is removed, it will cannot be recovered.
 
 ```
-    -s, --scope          The token scope for the EZRadius instance.
+    -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default)
     
     -u, --url            The URL for the EZRadius instance. (Default: https://usa.ezradius.io)
     
@@ -89,8 +89,7 @@ Sample Call: ```.\RADIUSConsole.exe delete -s <scope_id> -u <instance_url> -a <a
 Similar to the displaying Radius policies, this command gets authentication logs and displays them to the console. It uses the ```GetAuthAuditLogsAsync()``` method to get the logs from the EZRadius instance, and prints information about each log to the terminal. To run this command, use the verb ```getlogs```. The SampleApp is configured to return logs for the previous 2 days; to change this see ```TimeFrameModel``` in the EZRadiusClient directory.
 
 ```
-    -s, --scope          The token scope for the EZRadius instance.
-    
+    -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default) 
     -u, --url            The URL for the EZRadius instance. (Default: https://usa.ezradius.io)
     
     -a, --adUrl          The Azure Active Directory instance (Entra ID) url.
@@ -98,6 +97,7 @@ Similar to the displaying Radius policies, this command gets authentication logs
     -l, --log            The Azure Application Insights connection string. (Optional)
     
     -d, --days           The number of days to get logs from. (Required)
+    -f, --file           Path to save the logs to a  csv file. If not provided, logs will be printed to console.
 ```
 
 Sample Call: ```.\RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
