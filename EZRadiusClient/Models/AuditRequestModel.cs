@@ -2,7 +2,6 @@
 
 namespace EZRadiusClient.Models;
 
-
 public class AuditRequestModel
 {
     public AuditRequestModel(TimeFrameModel timeFrame)
@@ -10,7 +9,7 @@ public class AuditRequestModel
         DateFrom = timeFrame.DateFrom;
         DateTo = timeFrame.DateTo;
     }
-    
+
     public AuditRequestModel()
     {
         DateFrom = DateTime.UtcNow.AddDays(-60);

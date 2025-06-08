@@ -199,8 +199,10 @@ public class EZRadiusManager : IEZRadiusManager
                 );
                 if (getAuthAuditLogsResponse is { Success: true, Message: not null })
                 {
-                    authenticationLogs = JsonSerializer.Deserialize<
-                        List<AuthenticationEventModel>>(getAuthAuditLogsResponse.Message) ?? new();
+                    authenticationLogs =
+                        JsonSerializer.Deserialize<List<AuthenticationEventModel>>(
+                            getAuthAuditLogsResponse.Message
+                        ) ?? new();
                     authenticationEvents.AddRange(authenticationLogs);
                 }
             }

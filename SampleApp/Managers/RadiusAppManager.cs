@@ -94,8 +94,9 @@ public class RadiusAppManager
             List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(
                 ezRadiusClient
             );
-            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies
-                .FirstOrDefault(policy => policy.PolicyName == parameters.PolicyName);
+            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies.FirstOrDefault(policy =>
+                policy.PolicyName == parameters.PolicyName
+            );
             if (chosenPolicyModel == null)
             {
                 Console.WriteLine("Policy not found");
@@ -185,8 +186,9 @@ public class RadiusAppManager
             List<RadiusPolicyModel> currentRadiusPolicies = await GetRadiusPoliciesAsync(
                 ezRadiusClient
             );
-            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies
-                .FirstOrDefault(policy => policy.PolicyName == parameters.PolicyName);
+            RadiusPolicyModel? chosenPolicyModel = currentRadiusPolicies.FirstOrDefault(policy =>
+                policy.PolicyName == parameters.PolicyName
+            );
             if (chosenPolicyModel == null)
             {
                 Console.WriteLine("Policy not found");
@@ -232,13 +234,11 @@ public class RadiusAppManager
             Console.WriteLine($"Found {getAuditLogsResult.Count} logs");
             if (!string.IsNullOrWhiteSpace(parameters.CsvFilePath))
             {
-                await using (StreamWriter writer = new (parameters.CsvFilePath))
+                await using (StreamWriter writer = new(parameters.CsvFilePath))
                 {
                     await using (
-                        CsvWriter csvWriter = new (
-                            writer,
-                            new CsvConfiguration(CultureInfo.InvariantCulture)
-                        )
+                        CsvWriter csvWriter =
+                            new(writer, new CsvConfiguration(CultureInfo.InvariantCulture))
                     )
                     {
                         await csvWriter.WriteRecordsAsync(getAuditLogsResult);
@@ -256,7 +256,9 @@ public class RadiusAppManager
                     Console.WriteLine(
                         $"Authentication Type: {authenticationEventLog.AuthenticationType}"
                     );
-                    Console.WriteLine($"Access Policy Name: {authenticationEventLog.AccessPolicyName}");
+                    Console.WriteLine(
+                        $"Access Policy Name: {authenticationEventLog.AccessPolicyName}"
+                    );
                     Console.WriteLine($"Message: {authenticationEventLog.Message}");
                     Console.WriteLine($"Successful: {authenticationEventLog.Successful}");
                 }

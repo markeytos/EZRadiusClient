@@ -34,7 +34,12 @@ public class GetAuditLogsArgModel
 
     [Option('d', "days", Required = true, HelpText = "Number of days to fetch logs for")]
     public int Days { get; set; }
-    
-    [Option('f', "file", Required = false, HelpText = "File path to save logs to (must end in .csv)")]
+
+    [Option(
+        'f',
+        "file",
+        Required = false,
+        HelpText = "File path to save logs to (must end in .csv)"
+    )]
     public string? FileName { get; set; }
 }
