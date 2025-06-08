@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      # - run: gh release create ezradius-client-v${{ inputs.version }} --title "Certificate Renewal Client v${{ inputs.version }}"
+      - run: gh release create ezradius-client-v${{ inputs.version }} --title "Certificate Renewal Client v${{ inputs.version }}"
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
@@ -33,4 +33,4 @@ jobs:
       - name: Run Powershell Script 
         run: .\SampleApp\buildAndSign.ps1
       - name: Upload Artifacts
-        run: gh release upload ezradius-client-v${{ inputs.version }} .\SampleApp\bin\Release\net8.0-windows\win-x64\publish\RADIUSConsole.exe
+        run: gh release upload ezradius-client-v${{ inputs.version }} .\SampleApp\bin\x64\Release\net8.0\win-x64\publish\RADIUSConsole.exe
