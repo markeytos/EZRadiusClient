@@ -168,14 +168,15 @@ public class EZRadiusManager : IEZRadiusManager
         {
             throw new ArgumentNullException(nameof(timeFrame));
         }
-        string payload = JsonSerializer.Serialize(timeFrame);
+        AuditRequestModel auditRequest = new(timeFrame);
+        string payload = JsonSerializer.Serialize(auditRequest);
         APIResultModel getAuthAuditLogsResponse = await _httpClient.CallGenericAsync(
             _url + "/api/Logs/GetAuthAuditLogs",
             payload,
             _token.Token,
             HttpMethod.Post
         );
-        if (getAuthAuditLogsResponse.Success && getAuthAuditLogsResponse.Message != null)
+        if (getAuthAuditLogsResponse is { Success: true, Message: not null })
         {
             List<AuthenticationEventModel>? authenticationLogs = JsonSerializer.Deserialize<
                 List<AuthenticationEventModel>
@@ -184,14 +185,30 @@ public class EZRadiusManager : IEZRadiusManager
             {
                 throw new HttpRequestException("Error deserializing auth logs");
             }
-            return authenticationLogs;
+            List<AuthenticationEventModel> authenticationEvents = new();
+            authenticationEvents.AddRange(authenticationLogs);
+            while (authenticationLogs.Count >= auditRequest.MaxNumberOfRecords)
+            {
+                auditRequest.PageNumber += 1;
+                payload = JsonSerializer.Serialize(auditRequest);
+                getAuthAuditLogsResponse = await _httpClient.CallGenericAsync(
+                    _url + "/api/Logs/GetAuthAuditLogs",
+                    payload,
+                    _token.Token,
+                    HttpMethod.Post
+                );
+                if (getAuthAuditLogsResponse is { Success: true, Message: not null })
+                {
+                    authenticationLogs = JsonSerializer.Deserialize<
+                        List<AuthenticationEventModel>>(getAuthAuditLogsResponse.Message) ?? new();
+                    authenticationEvents.AddRange(authenticationLogs);
+                }
+            }
+            return authenticationEvents;
         }
-        else
-        {
-            throw new HttpRequestException(
-                "Error getting auth logs" + getAuthAuditLogsResponse.Message
-            );
-        }
+        throw new HttpRequestException(
+            "Error getting auth logs" + getAuthAuditLogsResponse.Message
+        );
     }
 
     private async Task GetTokenAsync()

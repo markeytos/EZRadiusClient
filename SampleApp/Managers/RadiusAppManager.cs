@@ -230,18 +230,36 @@ public class RadiusAppManager
             List<AuthenticationEventModel> getAuditLogsResult =
                 await ezRadiusClient.GetAuthAuditLogsAsync(timeFrame);
             Console.WriteLine($"Found {getAuditLogsResult.Count} logs");
-            foreach (AuthenticationEventModel authenticationEventLog in getAuditLogsResult)
+            if (!string.IsNullOrWhiteSpace(parameters.CsvFilePath))
             {
-                Console.WriteLine($"=== {authenticationEventLog.DateCreated} ===");
-                Console.WriteLine($"User: {authenticationEventLog.UserName}");
-                Console.WriteLine($"Radius IP: {authenticationEventLog.RADIUSIP}");
-                Console.WriteLine($"Requesting IP: {authenticationEventLog.RequestingIP}");
-                Console.WriteLine(
-                    $"Authentication Type: {authenticationEventLog.AuthenticationType}"
-                );
-                Console.WriteLine($"Access Policy Name: {authenticationEventLog.AccessPolicyName}");
-                Console.WriteLine($"Message: {authenticationEventLog.Message}");
-                Console.WriteLine($"Successful: {authenticationEventLog.Successful}");
+                await using (StreamWriter writer = new (parameters.CsvFilePath))
+                {
+                    await using (
+                        CsvWriter csvWriter = new (
+                            writer,
+                            new CsvConfiguration(CultureInfo.InvariantCulture)
+                        )
+                    )
+                    {
+                        await csvWriter.WriteRecordsAsync(getAuditLogsResult);
+                    }
+                }
+            }
+            else
+            {
+                foreach (AuthenticationEventModel authenticationEventLog in getAuditLogsResult)
+                {
+                    Console.WriteLine($"=== {authenticationEventLog.DateCreated} ===");
+                    Console.WriteLine($"User: {authenticationEventLog.UserName}");
+                    Console.WriteLine($"Radius IP: {authenticationEventLog.RADIUSIP}");
+                    Console.WriteLine($"Requesting IP: {authenticationEventLog.RequestingIP}");
+                    Console.WriteLine(
+                        $"Authentication Type: {authenticationEventLog.AuthenticationType}"
+                    );
+                    Console.WriteLine($"Access Policy Name: {authenticationEventLog.AccessPolicyName}");
+                    Console.WriteLine($"Message: {authenticationEventLog.Message}");
+                    Console.WriteLine($"Successful: {authenticationEventLog.Successful}");
+                }
             }
             return 0;
         }
