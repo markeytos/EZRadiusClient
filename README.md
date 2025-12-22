@@ -9,6 +9,25 @@ To run the SampleApp, it requires a token scope ID, a url for EZRadius instance 
 2) Use the SampleApp to see how the client can be used and configured (must have EZRadius instance with a Radius policy)
 3) If you would like to call the sample app from the command line, you can download a signed version from [here](https://download.keytos.io/Downloads/EZRADIUS/RADIUSConsole.exe)
 
+## Publishing a New Release
+
+To publish a new version of the EZRadiusClient NuGet package:
+
+1. Navigate to the **Actions** tab in the GitHub repository
+2. Select the **Publish NuGet Package** workflow from the left sidebar
+3. Click the **Run workflow** button
+4. Enter the new version number (e.g., `1.2.0`) in the version input field
+5. Click **Run workflow** to start the process
+
+The workflow will:
+- Build the NuGet package with the specified version
+- Sign the package using Azure Code Signing
+- Verify the package signature
+- Publish the package to NuGet.org
+- Upload the package as an artifact for reference
+
+**Note:** Ensure that the version number follows semantic versioning (MAJOR.MINOR.PATCH) and hasn't been published before.
+
 ## Displaying Radius Policies
 
 Starting with a basic feature, the ```show``` verb will display all the Radius policies. This command calls the ```GetRadiusPoliciesAsync()``` method and prints to the console the Radius policies and their attributes currently in the passed EZRadius instance.   
