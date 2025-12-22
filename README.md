@@ -27,7 +27,7 @@ Sample Call: ```.\RADIUSConsole.exe show -s <scope_id> -u <instance_url> -a <ad_
 
 ## Downloading Allowed IP Addresses from Policy
 
-Building off of the previous command, this command also calls the ```GetRadiusPoliciesAsync()``` method to get the policies, but it saves all the allowed IP addresses of a policy into a .csv file. The program asks the user which policy's IP addresses should be saved. To run this, use the ```download``` verb when running the SampleApp with the following flags. An example of the output .csv file is in the SampleApp directory and titled ```Sample.csv```.
+Building off of the previous command, this command also calls the ```GetRadiusPoliciesAsync()``` method to get the policies, but it saves all the allowed IP addresses of a policy into a .csv file. The program asks the user which policy's IP addresses should be saved. To run this, use the ```download``` verb when running the SampleApp with the following flags. An example of the output .csv file is in the SampleApp directory and titled ```Sample.csv```. The CSV file includes the following columns: ClientIPAddress, SharedSecret, and FriendlyName.
 
 ```
     -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default)
@@ -48,7 +48,7 @@ Sample Call: ```.\RADIUSConsole.exe download -s <scope_id> -u <instance_url> -a 
 
 ## Updating Allowed IP Addresses for Policy
 
-This command utilizes the ```CreateOrEditRadiusPolicyAsync()``` method to make changes to an existing Radius policy from the EZRadius instance. The method takes in the ```RadiusPolicyModel``` which is one of the fields returned by the ```GetRadiusPoliciesAsync()```. It takes a .csv file containing IP addresses and their secrets; the format should match that of the sample .csv file in the SampleApp directory titled ```Sample.csv```. The IP addresses will overwrite the current IP addresses for that policy, which is then saved in the EZRadius instance. This command is run using the ```upload``` verb.  
+This command utilizes the ```CreateOrEditRadiusPolicyAsync()``` method to make changes to an existing Radius policy from the EZRadius instance. The method takes in the ```RadiusPolicyModel``` which is one of the fields returned by the ```GetRadiusPoliciesAsync()```. It takes a .csv file containing IP addresses, their secrets, and optional friendly names; the format should match that of the sample .csv file in the SampleApp directory titled ```Sample.csv```. The CSV file includes the following columns: ClientIPAddress, SharedSecret, and FriendlyName (optional). The IP addresses will overwrite the current IP addresses for that policy, which is then saved in the EZRadius instance. This command is run using the ```upload``` verb.  
 
 ```
     -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default)

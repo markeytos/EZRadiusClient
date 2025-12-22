@@ -38,7 +38,10 @@ public class RadiusAppManager
                 Console.WriteLine($"Allowed IP Addresses: {radiusPolicy.AllowedIPAddresses.Count}");
                 foreach (AllowedIPAddressModel allowedIPAddress in radiusPolicy.AllowedIPAddresses)
                 {
-                    Console.WriteLine($"\t {allowedIPAddress.ClientIPAddress}");
+                    string friendlyNameDisplay = string.IsNullOrWhiteSpace(allowedIPAddress.FriendlyName) 
+                        ? "" 
+                        : $" ({allowedIPAddress.FriendlyName})";
+                    Console.WriteLine($"\t {allowedIPAddress.ClientIPAddress}{friendlyNameDisplay}");
                 }
 
                 Console.WriteLine($"Access Policies: {radiusPolicy.AccessPolicies.Count}");
@@ -308,7 +311,7 @@ public class RadiusAppManager
             foreach (var record in records)
             {
                 allowedIPAddresses.Add(
-                    new AllowedIPAddressModel(record.ClientIPAddress, record.SharedSecret)
+                    new AllowedIPAddressModel(record.ClientIPAddress, record.SharedSecret, record.FriendlyName)
                 );
             }
             currentPolicy.AllowedIPAddresses = allowedIPAddresses;
