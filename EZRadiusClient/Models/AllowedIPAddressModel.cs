@@ -9,12 +9,14 @@ public class AllowedIPAddressModel
     {
         ClientIPAddress = String.Empty;
         SharedSecret = String.Empty;
+        FriendlyName = String.Empty;
     }
 
-    public AllowedIPAddressModel(string clientIpAddress, string sharedSecret)
+    public AllowedIPAddressModel(string clientIpAddress, string sharedSecret, string friendlyName = "")
     {
         ClientIPAddress = clientIpAddress;
         SharedSecret = sharedSecret;
+        FriendlyName = friendlyName;
     }
 
     [JsonPropertyName("ClientIPAddress")]
@@ -24,4 +26,8 @@ public class AllowedIPAddressModel
     [JsonPropertyName("SharedSecret")]
     [Name("SharedSecret")]
     public string SharedSecret { get; set; }
+
+    [JsonPropertyName("FriendlyName")]
+    [Name("FriendlyName")]
+    public string FriendlyName { get; set; }
 }
