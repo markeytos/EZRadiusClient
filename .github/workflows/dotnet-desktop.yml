@@ -12,16 +12,16 @@ env:
   GH_TOKEN: ${{ github.token }}
 jobs:
 
-  build:
-    runs-on: windows-latest  
+  build-windows:
+    name: Build client for Windows
+    runs-on: windows-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      - run: gh release create ezradius-client-v${{ inputs.version }} --title "Certificate Renewal Client v${{ inputs.version }}"
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
       - name: Authenticate with Azure
         uses: azure/login@v1
         with:
@@ -32,5 +32,70 @@ jobs:
         uses: microsoft/setup-msbuild@v2
       - name: Run Powershell Script 
         run: .\SampleApp\buildAndSign.ps1
-      - name: Upload Artifacts
-        run: gh release upload ezradius-client-v${{ inputs.version }} .\SampleApp\bin\x64\Release\net8.0\win-x64\publish\RADIUSConsole.exe
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-binary
+          path: .\SampleApp\bin\x64\Release\net8.0\win-x64\publish\RADIUSConsole.exe
+
+  build-macos:
+    name: Build client for macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish macOS binary
+        run: dotnet publish ./SampleApp/SampleApp.csproj -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-binary
+          path: ./SampleApp/bin/Release/net8.0/osx-x64/publish/RADIUSConsole
+
+  build-linux:
+    name: Build client for Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish Linux binary
+        run: dotnet publish ./SampleApp/SampleApp.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-binary
+          path: ./SampleApp/bin/Release/net8.0/linux-x64/publish/RADIUSConsole
+
+  create-release:
+    name: Create release and upload binaries
+    runs-on: ubuntu-latest
+    needs: [build-windows, build-macos, build-linux]
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Create GitHub Release
+        run: gh release create ezradius-client-v${{ inputs.version }} --title "Certificate Renewal Client v${{ inputs.version }}" --repo ${{ github.repository }}
+
+      - name: Upload Windows binary
+        run: gh release upload ezradius-client-v${{ inputs.version }} ./artifacts/windows-binary/RADIUSConsole.exe --repo ${{ github.repository }}
+
+      - name: Upload macOS binary
+        run: |
+          mv ./artifacts/macos-binary/RADIUSConsole ./artifacts/macos-binary/RADIUSConsole-macos-x64
+          gh release upload ezradius-client-v${{ inputs.version }} ./artifacts/macos-binary/RADIUSConsole-macos-x64 --repo ${{ github.repository }}
+
+      - name: Upload Linux binary
+        run: |
+          mv ./artifacts/linux-binary/RADIUSConsole ./artifacts/linux-binary/RADIUSConsole-linux-x64
+          gh release upload ezradius-client-v${{ inputs.version }} ./artifacts/linux-binary/RADIUSConsole-linux-x64 --repo ${{ github.repository }}

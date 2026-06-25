@@ -32,8 +32,22 @@ public class GetAuditLogsArgModel
     )]
     public string ADUrl { get; set; } = string.Empty;
 
-    [Option('d', "days", Required = true, HelpText = "Number of days to fetch logs for")]
-    public int Days { get; set; }
+    [Option('d', "days", Required = false, HelpText = "Number of days to fetch logs for")]
+    public int? Days { get; set; }
+
+    [Option(
+        "from",
+        Required = false,
+        HelpText = "Start date/time for log range (for example: 2026-01-01 or 2026-01-01T00:00:00)"
+    )]
+    public string? DateFrom { get; set; }
+
+    [Option(
+        "to",
+        Required = false,
+        HelpText = "End date/time for log range (for example: 2026-01-31 or 2026-01-31T23:59:59)"
+    )]
+    public string? DateTo { get; set; }
 
     [Option(
         'f',

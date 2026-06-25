@@ -217,21 +217,15 @@ public class RadiusAppManager
         parameters = InputService.ValidateArguments(parameters);
         IEZRadiusManager ezRadiusClient = InitializeEzRadiusManager(parameters);
 
-        if (!parameters.Days.HasValue)
+        if (!TryBuildTimeFrame(parameters, out TimeFrameModel? timeFrame, out string description, out string validationError))
         {
-            Console.WriteLine(
-                "Missing Days argument. Please provide a number of days to get audit logs for."
-            );
+            Console.WriteLine(validationError);
             return 1;
         }
 
-        TimeFrameModel timeFrame = new(parameters.Days.Value);
-
         try
         {
-            Console.WriteLine(
-                $"Getting Authentication Audit Logs for past {parameters.Days.Value} days..."
-            );
+            Console.WriteLine($"Getting Authentication Audit Logs for {description}...");
             List<AuthenticationEventModel> getAuditLogsResult =
                 await ezRadiusClient.GetAuthAuditLogsAsync(timeFrame);
             Console.WriteLine($"Found {getAuditLogsResult.Count} logs");
@@ -273,6 +267,75 @@ public class RadiusAppManager
             Console.WriteLine(e.Message);
             return 1;
         }
+    }
+
+    private static bool TryBuildTimeFrame(
+        ArgumentsModel parameters,
+        out TimeFrameModel? timeFrame,
+        out string description,
+        out string validationError
+    )
+    {
+        timeFrame = null;
+        description = string.Empty;
+        validationError = string.Empty;
+
+        bool hasDays = parameters.Days.HasValue;
+        bool hasFrom = !string.IsNullOrWhiteSpace(parameters.DateFrom);
+        bool hasTo = !string.IsNullOrWhiteSpace(parameters.DateTo);
+
+        if (hasDays && (hasFrom || hasTo))
+        {
+            validationError = "Use either --days or --from/--to, not both.";
+            return false;
+        }
+
+        if (hasDays)
+        {
+            if (parameters.Days <= 0)
+            {
+                validationError = "--days must be greater than 0.";
+                return false;
+            }
+
+            timeFrame = new TimeFrameModel(parameters.Days.Value);
+            description = $"the past {parameters.Days.Value} days";
+            return true;
+        }
+
+        if (hasFrom ^ hasTo)
+        {
+            validationError = "When using a date range, both --from and --to are required.";
+            return false;
+        }
+
+        if (!(hasFrom && hasTo))
+        {
+            validationError = "Provide either --days <n> or --from <date> --to <date>.";
+            return false;
+        }
+
+        if (!DateTime.TryParse(parameters.DateFrom, out DateTime parsedFrom))
+        {
+            validationError = "Invalid --from value. Use a valid date/time such as 2026-01-01 or 2026-01-01T00:00:00.";
+            return false;
+        }
+
+        if (!DateTime.TryParse(parameters.DateTo, out DateTime parsedTo))
+        {
+            validationError = "Invalid --to value. Use a valid date/time such as 2026-01-31 or 2026-01-31T23:59:59.";
+            return false;
+        }
+
+        if (parsedFrom > parsedTo)
+        {
+            validationError = "--from must be earlier than or equal to --to.";
+            return false;
+        }
+
+        timeFrame = new TimeFrameModel(parsedFrom, parsedTo);
+        description = $"{parsedFrom:u} to {parsedTo:u}";
+        return true;
     }
 
     private async Task<List<RadiusPolicyModel>> GetRadiusPoliciesAsync(

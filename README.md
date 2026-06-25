@@ -86,7 +86,7 @@ Sample Call: ```.\RADIUSConsole.exe delete -s <scope_id> -u <instance_url> -a <a
 
 ## Displaying Authorization Logs
 
-Similar to the displaying Radius policies, this command gets authentication logs and displays them to the console. It uses the ```GetAuthAuditLogsAsync()``` method to get the logs from the EZRadius instance, and prints information about each log to the terminal. To run this command, use the verb ```getlogs```. The SampleApp is configured to return logs for the previous 2 days; to change this see ```TimeFrameModel``` in the EZRadiusClient directory.
+Similar to displaying Radius policies, this command gets authentication logs and displays them to the console. It uses the ```GetAuthAuditLogsAsync()``` method to get the logs from the EZRadius instance, and prints information about each log to the terminal. To run this command, use the verb ```getlogs```. You can pass either a relative range using days, or an explicit date range using from/to.
 
 ```
     -s, --scope           The token scope for the EZRadius instance. (Default: https://management.core.windows.net/.default) 
@@ -96,8 +96,12 @@ Similar to the displaying Radius policies, this command gets authentication logs
     
     -l, --log            The Azure Application Insights connection string. (Optional)
     
-    -d, --days           The number of days to get logs from. (Required)
+    -d, --days           The number of days to look back from now. (Optional, mutually exclusive with --from/--to)
+    --from               Start date/time for explicit range (example: 2026-01-01 or 2026-01-01T00:00:00)
+    --to                 End date/time for explicit range (example: 2026-01-31 or 2026-01-31T23:59:59)
     -f, --file           Path to save the logs to a  csv file. If not provided, logs will be printed to console.
 ```
 
-Sample Call: ```.\RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
+Sample Call (days lookback): ```.RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
+
+Sample Call (explicit date range): ```.RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> --from <from_date> --to <to_date>```

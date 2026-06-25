@@ -46,6 +46,8 @@ public class ArgumentsModel
         ADUrl = arguments.ADUrl;
         AppInsightConnection = arguments.AppInsightConnection;
         Days = arguments.Days;
+        DateFrom = arguments.DateFrom;
+        DateTo = arguments.DateTo;
         CsvFilePath = arguments.FileName;
     }
 
@@ -60,6 +62,10 @@ public class ArgumentsModel
     public string? CsvFilePath { get; set; }
 
     public int? Days { get; set; }
+
+    public string? DateFrom { get; set; }
+
+    public string? DateTo { get; set; }
 
     public string? PolicyName { get; set; }
 }
