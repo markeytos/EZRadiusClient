@@ -102,6 +102,6 @@ Similar to displaying Radius policies, this command gets authentication logs and
     -f, --file           Path to save the logs to a  csv file. If not provided, logs will be printed to console.
 ```
 
-Sample Call (days lookback): ```.RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
+Sample Call (days lookback): ```.\RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> -d <number_of_days>```
 
-Sample Call (explicit date range): ```.RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> --from <from_date> --to <to_date>```
+Sample Call (explicit date range): ```.\RADIUSConsole.exe getlogs -s <scope_id> -u <instance_url> -a <ad_url> -l <insight_connection_string> --from <from_date> --to <to_date>```
