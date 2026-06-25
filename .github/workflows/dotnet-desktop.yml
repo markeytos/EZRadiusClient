@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-binary
-          path: .\SampleApp\bin\x64\Release\net8.0\win-x64\publish\RADIUSConsole.exe
+          path: .\SampleApp\bin\x64\Release\net10.0\win-x64\publish\RADIUSConsole.exe
 
   build-macos:
     name: Build client for macOS
@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-binary
-          path: ./SampleApp/bin/Release/net8.0/osx-x64/publish/RADIUSConsole
+          path: ./SampleApp/bin/Release/net10.0/osx-x64/publish/RADIUSConsole
 
   build-linux:
     name: Build client for Linux
@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-binary
-          path: ./SampleApp/bin/Release/net8.0/linux-x64/publish/RADIUSConsole
+          path: ./SampleApp/bin/Release/net10.0/linux-x64/publish/RADIUSConsole
 
   create-release:
     name: Create release and upload binaries
