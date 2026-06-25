@@ -315,13 +315,27 @@ public class RadiusAppManager
             return false;
         }
 
-        if (!DateTime.TryParse(parameters.DateFrom, out DateTime parsedFrom))
+        if (
+            !DateTimeOffset.TryParse(
+                parameters.DateFrom,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out DateTimeOffset parsedFrom
+            )
+        )
         {
             validationError = "Invalid --from value. Use a valid date/time such as 2026-01-01 or 2026-01-01T00:00:00.";
             return false;
         }
 
-        if (!DateTime.TryParse(parameters.DateTo, out DateTime parsedTo))
+        if (
+            !DateTimeOffset.TryParse(
+                parameters.DateTo,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out DateTimeOffset parsedTo
+            )
+        )
         {
             validationError = "Invalid --to value. Use a valid date/time such as 2026-01-31 or 2026-01-31T23:59:59.";
             return false;
@@ -333,8 +347,8 @@ public class RadiusAppManager
             return false;
         }
 
-        timeFrame = new TimeFrameModel(parsedFrom, parsedTo);
-        description = $"{parsedFrom:u} to {parsedTo:u}";
+        timeFrame = new TimeFrameModel(parsedFrom.UtcDateTime, parsedTo.UtcDateTime);
+        description = $"{parsedFrom.UtcDateTime:u} to {parsedTo.UtcDateTime:u}";
         return true;
     }
 
