@@ -2,7 +2,11 @@
   "profiles": {
     "SampleApp": {
       "commandName": "Project",
-      "commandLineArgs": "getlogs --url https://localhost:5003 -d 35 -f test.csv"
+      "commandLineArgs": "getlogs --url https://usa.east.test-slot.ezradius.io -d 35 -f test.csv"
+    },
+    "DateRange": {
+      "commandName": "Project",
+      "commandLineArgs": "getlogs --url https://usa.east.test-slot.ezradius.io --from 2026-06-20 --to 2026-06-26 -f test.csv"
     }
   }
 }

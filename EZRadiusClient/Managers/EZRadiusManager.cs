@@ -187,7 +187,7 @@ public class EZRadiusManager : IEZRadiusManager
             }
             List<AuthenticationEventModel> authenticationEvents = new();
             authenticationEvents.AddRange(authenticationLogs);
-            while (authenticationLogs.Count >= auditRequest.MaxNumberOfRecords)
+            while (authenticationLogs.Count >= (auditRequest.MaxNumberOfRecords *.80))
             {
                 auditRequest.PageNumber += 1;
                 payload = JsonSerializer.Serialize(auditRequest);
@@ -206,7 +206,9 @@ public class EZRadiusManager : IEZRadiusManager
                     authenticationEvents.AddRange(authenticationLogs);
                 }
             }
-            return authenticationEvents;
+            return authenticationEvents
+                .DistinctBy(x => (x.DateCreated, x.UserName))
+                .ToList();
         }
         throw new HttpRequestException(
             "Error getting auth logs" + getAuthAuditLogsResponse.Message

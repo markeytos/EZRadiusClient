@@ -10,6 +10,12 @@ public class TimeFrameModel
         DateTo = DateTime.Now;
     }
 
+    public TimeFrameModel(DateTime dateFrom, DateTime dateTo)
+    {
+        DateFrom = dateFrom;
+        DateTo = dateTo;
+    }
+
     [JsonPropertyName("DateFrom")]
     public DateTime DateFrom { get; set; }
 
